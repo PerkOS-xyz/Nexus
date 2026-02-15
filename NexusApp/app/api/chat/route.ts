@@ -1,13 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
+import Anthropic from '@anthropic-ai/sdk';
 
-// Nexus Agent endpoint - configure in .env
-const NEXUS_AGENT_URL = process.env.NEXUS_AGENT_URL || 'http://localhost:18789';
-const NEXUS_AGENT_TOKEN = process.env.NEXUS_AGENT_TOKEN;
+// Direct Anthropic API call for chat
+// In production, this should go through the Nexus Agent
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const SYSTEM_PROMPT = `You are Nexus, an AI assistant that helps users deploy Token Vaults on Base.
+
+Your capabilities:
+- Help users configure vault parameters (name, symbol, cap, duration)
+- Explain how Token Vaults work with yield-backed exits
+- Guide users through the $1 USDC deployment fee (x402 payment)
+- Provide information about their deployed vaults
+
+Vault Parameters:
+- name: Token name (e.g., "Sunrise Token")
+- symbol: Token symbol, 3-5 characters (e.g., "SUN")
+- cap: Maximum USDC to raise (e.g., 50000)
+- duration: Lock period in days (e.g., 30, 60, 90)
+- initialFactor: Starting exit factor, default 80% (users get 80% if they exit immediately)
+- curveType: LINEAR or EXPONENTIAL factor growth
+
+How it works:
+1. User deposits USDC → receives vault tokens at fixed price
+2. Deposits go to Yearn V3 vault → earn yield
+3. Exit factor starts at 80% and increases over time
+4. When user withdraws, they get: (TVL/supply) × tokens × factor%
+
+Deployed on Base (chain ID 8453).
+VaultFactory: 0x9Df66106201d04CF8398d6387C2D022eb9353c73
+
+When a user wants to create a vault, extract the parameters and confirm:
+- Token name and symbol
+- Fundraising cap in USDC
+- Lock duration in days
+- Initial factor (default 80%)
+
+Then direct them to: https://nexus.perkos.xyz/create?name=X&symbol=Y&cap=Z&duration=D
+
+Be concise, helpful, and friendly. Use emojis sparingly.`;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message } = body;
+    const { message, history = [] } = body;
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
@@ -16,50 +54,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send message to Nexus Agent via OpenClaw API
-    const agentResponse = await fetch(`${NEXUS_AGENT_URL}/api/agent/message`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(NEXUS_AGENT_TOKEN && { 'Authorization': `Bearer ${NEXUS_AGENT_TOKEN}` }),
-      },
-      body: JSON.stringify({
-        message,
-        // Include wallet address if available (for context)
-        // walletAddress: request.headers.get('x-wallet-address'),
-      }),
+    // Build conversation history
+    const messages = [
+      ...history.map((msg: { role: string; content: string }) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+      })),
+      { role: 'user' as const, content: message },
+    ];
+
+    // Call Anthropic API
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages,
     });
 
-    if (!agentResponse.ok) {
-      console.error('Agent response error:', agentResponse.status);
-      
-      // Fallback: Return a helpful message if agent is unavailable
-      if (agentResponse.status === 404 || agentResponse.status === 502) {
-        return NextResponse.json({
-          response: "🔗 Nexus Agent is currently starting up. Please try again in a moment.\n\nIn the meantime, you can tell me about the token you'd like to create:\n- Token name and symbol\n- Fundraising cap (in USDC)\n- Lock duration (in days)"
-        });
-      }
-      
-      throw new Error(`Agent error: ${agentResponse.status}`);
-    }
+    // Extract text response
+    const textContent = response.content.find(c => c.type === 'text');
+    const responseText = textContent ? textContent.text : 'I apologize, I could not generate a response.';
 
-    const data = await agentResponse.json();
-    
     return NextResponse.json({
-      response: data.response || data.message || data.content,
+      response: responseText,
     });
 
   } catch (error) {
     console.error('Chat API error:', error);
     
-    // Graceful fallback for development/demo
+    // Graceful fallback
     return NextResponse.json({
-      response: "I'm having trouble connecting to the backend. Let me help you anyway!\n\nTo create a Token Vault, I'll need:\n1. **Token Name** (e.g., \"Sunrise Token\")\n2. **Symbol** (e.g., \"SUN\")\n3. **Cap** (how much USDC to raise)\n4. **Duration** (lock period in days)\n\nTell me about your project and I'll configure the vault for you."
+      response: "I'm having trouble connecting right now. Please try again in a moment.\n\nIn the meantime, you can create a vault directly at:\nhttps://nexus.perkos.xyz/create"
     });
   }
 }
 
-// Health check
 export async function GET() {
-  return NextResponse.json({ status: 'ok', agent: NEXUS_AGENT_URL });
+  return NextResponse.json({ 
+    status: 'ok',
+    model: 'claude-sonnet-4-20250514',
+    note: 'Direct Anthropic API mode'
+  });
 }

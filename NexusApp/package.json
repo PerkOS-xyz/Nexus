@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
     "@dynamic-labs/ethereum": "^4.61.3",
     "@dynamic-labs/sdk-react-core": "^4.61.3",
     "@hookform/resolvers": "^5.2.2",
