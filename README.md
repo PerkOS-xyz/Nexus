@@ -31,9 +31,7 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 - **x402 payments** for launch fees ($1 USDC)
 - **Linear or exponential exit curves**
 
-![Features & Mechanism](docs/images/Landing2.png)
-
-![Tradeoffs & Risks](docs/images/Landing3.png)
+![Key Features](docs/images/key-features.svg)
 
 ---
 
