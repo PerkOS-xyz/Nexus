@@ -20,7 +20,7 @@ Nexus enables projects to deploy a vault + ERC-20 token to raise funds at a fixe
 
 Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
 
-![Landing Page](docs/images/Landing.pmg.png)
+![Landing Page](docs/images/Landing.png)
 
 ### Key Features
 
