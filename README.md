@@ -113,6 +113,50 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 
 ---
 
+## Firebase Data Model
+
+Firebase Firestore stores the relationship between user wallets and their deployed contracts.
+
+### Collections
+
+**`users/{walletAddress}`**
+```json
+{
+  "walletAddress": "0x...",
+  "createdAt": "2026-02-15T...",
+  "deploymentsCount": 3
+}
+```
+
+**`deployments/{deploymentId}`**
+```json
+{
+  "userWallet": "0x...",
+  "vaultAddress": "0x...",
+  "tokenAddress": "0x...",
+  "tokenName": "My Project Token",
+  "tokenSymbol": "MPT",
+  "config": {
+    "cap": "100000000000",
+    "maxTokenSupply": "1000000000000000000000000",
+    "initialFactorBps": 8000,
+    "projectFeeBps": 500,
+    "unlockTimestamp": 1739577600,
+    "curveType": "LINEAR"
+  },
+  "x402PaymentTx": "0x...",
+  "deployTx": "0x...",
+  "deployedAt": "2026-02-15T...",
+  "chain": "base",
+  "status": "deployed"
+}
+```
+
+**`deployments` (subcollection under user)**
+- Query: `users/{wallet}/deployments` - Get all deployments for a user
+
+---
+
 ## Old Architecture
 
 ```
