@@ -263,13 +263,22 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 
 | Contract | Address | Verified |
 |----------|---------|----------|
-| **VaultFactory** | [`0x292FFa5Cc6E104304ad19259dEa6a265DC28b511`](https://basescan.org/address/0x292FFa5Cc6E104304ad19259dEa6a265DC28b511) | ✅ Sourcify |
+| **VaultFactory v2** | [`0xbF283332d69C3494986adF33B43F5E44eab02977`](https://basescan.org/address/0xbF283332d69C3494986adF33B43F5E44eab02977) | ✅ Sourcify |
 
 **Deployment Details:**
 - Network: Base (Chain ID 8453)
 - Deployer/Owner: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
 - Platform Fee: 1% (100 bps)
 - Platform Wallet: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
+
+### Test Vault (Boulder Token v2)
+| Contract | Address |
+|----------|---------|
+| Vault | [`0x26a2758df64eb2560561128c42b46a2f7f2cf691`](https://basescan.org/address/0x26a2758df64eb2560561128c42b46a2f7f2cf691) |
+| BTv2 Token | [`0xf142790f37fa6238d6ac95d2bae51dbbd27a4da3`](https://basescan.org/address/0xf142790f37fa6238d6ac95d2bae51dbbd27a4da3) |
+
+- Token decimals: 6 (matches USDC)
+- Yield source: Yearn V3 (True Yield Dollar)
 
 ---
 
