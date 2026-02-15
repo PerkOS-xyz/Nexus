@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,7 +54,7 @@ interface Vault {
 }
 
 export default function LiquidityPage() {
-  const { isAuthenticated } = useDynamicContext();
+  const isAuthenticated = useIsLoggedIn();
   const [selectedVault, setSelectedVault] = useState<Vault | null>(null);
   const [depositAmount, setDepositAmount] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);

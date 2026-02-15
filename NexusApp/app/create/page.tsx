@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useDynamicContext, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 export default function CreateProject() {
-  const { isAuthenticated, primaryWallet } = useDynamicContext();
+  const isAuthenticated = useIsLoggedIn();
+  const { primaryWallet } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(false);
   
   const [formData, setFormData] = useState({

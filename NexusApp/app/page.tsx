@@ -1,12 +1,12 @@
 "use client";
 
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useDynamicContext, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 export default function Home() {
-  const { isAuthenticated } = useDynamicContext();
+  const isAuthenticated = useIsLoggedIn();
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">

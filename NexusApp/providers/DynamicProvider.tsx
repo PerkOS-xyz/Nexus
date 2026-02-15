@@ -11,7 +11,7 @@ export default function DynamicProvider({
   return (
     <DynamicContextProvider
       settings={{
-        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID || "",
+        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID || "placeholder",
         walletConnectors: [EthereumWalletConnectors],
       }}
     >
