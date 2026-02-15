@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="lin3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="exp3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c084fc"/>
+    </linearGradient>
+    <filter id="glow3">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="450" rx="16" fill="url(#bg3)"/>
+  <rect width="960" height="450" rx="16" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="420" y="30" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="700">Early vs Late Exit: Per-Token Payout</text>
+  <text x="420" y="50" text-anchor="middle" fill="#64748b" font-size="11">Early withdrawers receive less — subsidizing those who wait</text>
+
+  <!-- Chart area: x=100..740, y=65..370 -->
+  <!-- Y range: $0.80..$1.20, X range: 0%..100% withdrawn -->
+
+  <!-- Axes -->
+  <line x1="100" y1="65" x2="100" y2="370" stroke="#475569" stroke-width="1"/>
+  <line x1="100" y1="370" x2="740" y2="370" stroke="#475569" stroke-width="1"/>
+
+  <!-- Y axis labels -->
+  <text x="90" y="374" text-anchor="end" fill="#64748b" font-size="11">$0.80</text>
+  <text x="90" y="298" text-anchor="end" fill="#64748b" font-size="11">$0.90</text>
+  <text x="90" y="222" text-anchor="end" fill="#64748b" font-size="11">$1.00</text>
+  <text x="90" y="145" text-anchor="end" fill="#64748b" font-size="11">$1.10</text>
+  <text x="90" y="69" text-anchor="end" fill="#64748b" font-size="11">$1.20</text>
+
+  <!-- Y axis title -->
+  <text x="32" y="218" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500" transform="rotate(-90, 32, 218)">Payout / Token (USDC)</text>
+
+  <!-- X axis labels -->
+  <text x="100" y="390" text-anchor="middle" fill="#64748b" font-size="11">0%</text>
+  <text x="260" y="390" text-anchor="middle" fill="#64748b" font-size="11">25%</text>
+  <text x="420" y="390" text-anchor="middle" fill="#64748b" font-size="11">50%</text>
+  <text x="580" y="390" text-anchor="middle" fill="#64748b" font-size="11">75%</text>
+  <text x="740" y="390" text-anchor="middle" fill="#64748b" font-size="11">100%</text>
+
+  <!-- X axis title -->
+  <text x="420" y="415" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500">% of Total Supply Withdrawn</text>
+
+  <!-- Horizontal grid -->
+  <line x1="100" y1="294" x2="740" y2="294" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="100" y1="141" x2="740" y2="141" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Vertical grid -->
+  <line x1="260" y1="65" x2="260" y2="370" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="420" y1="65" x2="420" y2="370" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="580" y1="65" x2="580" y2="370" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Break-even line at $1.00 -->
+  <line x1="100" y1="218" x2="740" y2="218" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.6"/>
+  <text x="748" y="215" fill="#f59e0b" font-size="10" font-weight="600" opacity="0.8">$1.00</text>
+  <text x="748" y="227" fill="#f59e0b" font-size="9" opacity="0.6">break-even</text>
+
+  <!-- Loss zone (below $1.00) -->
+  <rect x="100" y="218" width="640" height="152" fill="#ef4444" opacity="0.04"/>
+
+  <!-- Profit zone (above $1.00) -->
+  <rect x="100" y="65" width="640" height="153" fill="#22c55e" opacity="0.04"/>
+
+  <!-- LINEAR curve: F = 0.80 + 0.40 * (x/100) → payout = F * $1 -->
+  <!-- 0%:$0.80(370) 12.5%:$0.85(332) 25%:$0.90(294) 37.5%:$0.95(256) 50%:$1.00(218) 62.5%:$1.05(179) 75%:$1.10(141) 87.5%:$1.15(103) 100%:$1.20(65) -->
+  <polyline points="100,370 180,332 260,294 340,256 420,218 500,179 580,141 660,103 740,65"
+    fill="none" stroke="url(#lin3)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow3)"/>
+
+  <!-- EXPONENTIAL curve: F = 0.80 + 0.40 * (x/100)^2 -->
+  <!-- 0%:$0.80(370) 12.5%:$0.806(365) 25%:$0.825(351) 37.5%:$0.856(327) 50%:$0.90(294) 62.5%:$0.956(251) 75%:$1.025(198) 87.5%:$1.106(137) 100%:$1.20(65) -->
+  <polyline points="100,370 180,365 260,351 340,327 420,294 500,251 580,198 660,137 740,65"
+    fill="none" stroke="url(#exp3)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow3)"/>
+
+  <!-- Linear break-even marker at 50% -->
+  <circle cx="420" cy="218" r="5" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.8"/>
+  <line x1="420" y1="228" x2="420" y2="250" stroke="#475569" stroke-width="1"/>
+  <text x="420" y="263" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="600">Linear break-even</text>
+  <text x="420" y="275" text-anchor="middle" fill="#60a5fa" font-size="10">at 50% withdrawn</text>
+
+  <!-- Exponential break-even marker at ~70.7% -->
+  <!-- x = 100 + 0.707 * 640 = 553, y = 218 -->
+  <circle cx="553" cy="218" r="5" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.8"/>
+  <line x1="553" y1="228" x2="553" y2="290" stroke="#475569" stroke-width="1"/>
+  <text x="553" y="303" text-anchor="middle" fill="#c084fc" font-size="10" font-weight="600">Exp break-even</text>
+  <text x="553" y="315" text-anchor="middle" fill="#c084fc" font-size="10">at ~71% withdrawn</text>
+
+  <!-- Early exit annotation (left side) -->
+  <circle cx="180" cy="332" r="4" fill="#ef4444" opacity="0.8"/>
+  <line x1="184" y1="328" x2="210" y2="310" stroke="#475569" stroke-width="1"/>
+  <rect x="215" y="295" width="135" height="34" rx="6" fill="#1e293b" stroke="#ef4444" stroke-width="1" opacity="0.9"/>
+  <text x="282" y="310" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600">Early exit: $0.85</text>
+  <text x="282" y="323" text-anchor="middle" fill="#94a3b8" font-size="9">-15% loss per token</text>
+
+  <!-- Late exit annotation (right side) -->
+  <circle cx="660" cy="103" r="4" fill="#22c55e" opacity="0.8"/>
+  <line x1="656" y1="107" x2="630" y2="125" stroke="#475569" stroke-width="1"/>
+  <rect x="495" y="112" width="140" height="34" rx="6" fill="#1e293b" stroke="#22c55e" stroke-width="1" opacity="0.9"/>
+  <text x="565" y="127" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="600">Late exit: $1.15</text>
+  <text x="565" y="140" text-anchor="middle" fill="#94a3b8" font-size="9">+15% profit per token</text>
+
+  <!-- Curve labels at right edge -->
+  <circle cx="740" cy="65" r="3.5" fill="#3b82f6" opacity="0.9"/>
+  <text x="755" y="69" fill="#60a5fa" font-size="10" font-weight="600">Linear</text>
+
+  <!-- Exp label at 87.5% mark where curves are separated -->
+  <circle cx="660" cy="137" r="3.5" fill="#a855f7" opacity="0.9"/>
+  <line x1="664" y1="137" x2="750" y2="137" stroke="#475569" stroke-width="1"/>
+  <text x="755" y="141" fill="#c084fc" font-size="10" font-weight="600">Exponential</text>
+
+  <!-- Bottom note -->
+  <text x="420" y="440" text-anchor="middle" fill="#475569" font-size="11" font-style="italic">Early sellers take a haircut → remaining TVL grows → late sellers profit</text>
+</svg>

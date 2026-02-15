@@ -294,6 +294,8 @@ EXPONENTIAL CURVE:
   factor = initialFactor + (maxFactor - initialFactor) × (withdrawn / totalSupply)²
 ```
 
+![Early vs Late Exit](docs/images/payout-early-exit.svg)
+
 ---
 
 ## Smart Contracts
