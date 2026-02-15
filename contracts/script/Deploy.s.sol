@@ -7,15 +7,18 @@ import {VaultFactory} from "../src/VaultFactory.sol";
 contract DeployScript is Script {
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        address deployer = vm.addr(deployerPrivateKey); // Derive address from private key
         address platformWallet = vm.envAddress("PLATFORM_WALLET");
         uint256 platformFeeBps = vm.envOr("PLATFORM_FEE_BPS", uint256(100)); // Default 1%
+
+        console.log("Deployer:", deployer);
 
         vm.startBroadcast(deployerPrivateKey);
 
         VaultFactory factory = new VaultFactory(
             platformWallet,
             platformFeeBps,
-            msg.sender
+            deployer // Use derived address, not msg.sender
         );
 
         console.log("VaultFactory deployed at:", address(factory));
