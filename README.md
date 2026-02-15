@@ -10,7 +10,15 @@ Built for **ETH Boulder 2026** 🏔️
 
 ## Overview
 
-Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with time-locked exits. Users interact with an **AI agent via chat** to configure and deploy their vault. Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
+Nexus enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with yield-backed exits. 
+
+**How it works:**
+1. Users **login with their wallet** (Dynamic)
+2. Users **chat with Nexus** (AI agent) to describe their token launch
+3. Users **pay $1 USDC** via x402 protocol (stack.perkos.xyz facilitator)
+4. Nexus **deploys the vault** on their behalf
+
+Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
 
 ### Key Features
 
@@ -30,34 +38,34 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 │                     NEXUS FRONTEND (NexusApp)                        │
 │              Next.js 16 + Tailwind + shadcn/ui + Dynamic             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • User connects wallet (Dynamic)                                   │
-│  • Create Project: Deploy vaults via form                           │
-│  • Add Liquidity: Deposit/withdraw from vault cards                 │
-│  • Views deployed vault + token addresses                           │
+│  • User logs in with wallet (Dynamic)                               │
+│  • Chat interface to talk with Nexus agent                          │
+│  • Pay $1 USDC via x402 to deploy vault                             │
+│  • View deployed vaults + deposit/withdraw                          │
 └────────────────────────────┬────────────────────────────────────────┘
                              │ WebSocket / API
                              ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                       NEXUS AGENT                                    │
-│                    (OpenClaw Backend)                                │
+│                    (OpenClaw / Clawdbot)                             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • Processes chat messages                                          │
-│  • Extracts vault parameters from conversation                      │
+│  • Receives chat messages from logged-in users                      │
+│  • Extracts vault parameters from natural language                  │
 │  • Generates x402 payment request ($1 USDC)                         │
-│  • Verifies payment via facilitator                                 │
+│  • Verifies payment via stack.perkos.xyz facilitator                │
 │  • Deploys vault using agent wallet (pays gas)                      │
-│  • Stores vault info in Firebase                                    │
+│  • Returns vault + token addresses to user                          │
 └────────────────────────────┬────────────────────────────────────────┘
                              │
               ┌──────────────┼──────────────┐
               ▼              ▼              ▼
 ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
 │   x402 Payment  │ │    Firebase     │ │  Smart Contracts│
-│  stack.perkos   │ │   (Firestore)   │ │     (Base)      │
+│ stack.perkos.xyz│ │   (Firestore)   │ │     (Base)      │
 ├─────────────────┤ ├─────────────────┤ ├─────────────────┤
 │ • $1 USDC fee   │ │ • Vault records │ │ • VaultFactory  │
-│ • EIP-712 sigs  │ │ • User wallets  │ │ • Vault         │
-│ • Facilitator   │ │ • Tx history    │ │ • VaultToken    │
+│ • EIP-712 sigs  │ │ • User history  │ │ • Vault         │
+│ • Facilitator   │ │ • Deployments   │ │ • VaultToken    │
 └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
@@ -66,13 +74,15 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 ## User Flow
 
 ```
-1. Connect Wallet     →  User connects via Dynamic
-2. Create Project     →  Fill form: token name, symbol, cap, APY, duration
-3. Deploy Vault       →  Pay $1 USDC via x402 → Agent deploys vault
-4. Receive Addresses  →  Vault + Token addresses returned
-5. Add Liquidity      →  Users deposit tokens, receive vault tokens
-6. Earn Yield         →  Vault factor increases over time
-7. Withdraw           →  Burn vault tokens, receive principal + yield
+1. Login              →  User connects wallet via Dynamic
+2. Chat with Nexus    →  User describes token launch in natural language
+3. Nexus Configures   →  Agent extracts vault parameters from conversation
+4. Pay Service Fee    →  User pays $1 USDC via x402 (stack.perkos.xyz facilitator)
+5. Nexus Deploys      →  Agent deploys VaultFactory.createVault()
+6. Receive Addresses  →  Vault + Token contract addresses returned
+7. Share & Deposit    →  Users can deposit tokens, receive vault tokens
+8. Earn Yield         →  Vault factor increases over time via Yearn V3
+9. Withdraw           →  Burn vault tokens, receive principal + yield
 ```
 
 ---
