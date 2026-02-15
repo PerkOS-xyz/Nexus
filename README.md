@@ -18,16 +18,22 @@ Nexus enables projects to deploy a vault + ERC-20 token to raise funds at a fixe
 3. Users **pay $1 USDC** via x402 protocol (stack.perkos.xyz facilitator)
 4. Nexus **deploys the vault** on their behalf
 
-Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
+Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
+
+![Landing Page](docs/images/Landing.pmg.png)
 
 ### Key Features
 
 - **AI-powered deployment** via chat interface
 - **Fixed-price token sales** with configurable cap and token price
 - **Time-locked exits** with dynamic discount factor
-- **Direct Yearn V3 integration** via ERC-4626 (no intermediary)
+- **Direct Yearn Finance V3 integration** via ERC-4626 (no intermediary)
 - **x402 payments** for launch fees ($1 USDC)
 - **Linear or exponential exit curves**
+
+![Features & Mechanism](docs/images/Landing2.png)
+
+![Tradeoffs & Risks](docs/images/Landing3.png)
 
 ---
 
@@ -88,6 +94,8 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 
 ## User Flow
 
+![Wallet Login](docs/images/Login.png)
+
 ```
 1. Login              →  User connects wallet via Dynamic
 2. Access Chat        →  User opens chat interface in NexusApp
@@ -100,7 +108,7 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 8. Receive Addresses  →  Vault + Token contract addresses returned in chat
 9. View Deployments   →  User sees their vaults in "My Vaults" section
 10. Share & Deposit   →  Users can deposit tokens, receive vault tokens
-11. Earn Yield        →  Vault factor increases over time via Yearn V3
+11. Earn Yield        →  Vault factor increases over time via Yearn Finance V3
 12. Withdraw          →  Burn vault tokens, receive principal + yield
 ```
 
@@ -148,7 +156,7 @@ NexusApp (Frontend)
 | **Database** | Firebase (Firestore) |
 | **Contracts** | Solidity 0.8.20 + Foundry |
 | **Chain** | Base (L2) |
-| **Yield** | Yearn V3 (ERC-4626) |
+| **Yield** | Yearn Finance V3 (ERC-4626) |
 
 ---
 
@@ -235,9 +243,9 @@ Firebase Firestore stores the relationship between user wallets and their deploy
 
 ---
 
-## Yearn V3 Integration
+## Yearn Finance V3 Integration
 
-The Vault contract integrates **directly** with Yearn V3 vaults using the ERC-4626 standard. No intermediary orchestrator needed.
+The Vault contract integrates **directly** with Yearn Finance V3 vaults using the ERC-4626 standard. No intermediary orchestrator needed.
 
 ### Base Mainnet Addresses
 
@@ -251,8 +259,8 @@ The Vault contract integrates **directly** with Yearn V3 vaults using the ERC-46
 ### How It Works
 
 1. User deposits USDC → Vault mints VaultTokens 1:1
-2. Vault deposits USDC into Yearn V3 vault → receives yield-bearing shares
-3. Yield accrues in Yearn vault over time
+2. Vault deposits USDC into Yearn Finance V3 vault → receives yield-bearing shares
+3. Yield accrues in Yearn Finance vault over time
 4. On withdrawal: Vault redeems shares, applies discount factor, transfers USDC
 
 ```solidity
@@ -278,7 +286,7 @@ payout = (TVL / supply) × tokens_to_burn × F%
 ```
 
 Where:
-- **TVL** = Total Value Locked (grows with yield from Yearn)
+- **TVL** = Total Value Locked (grows with yield from Yearn Finance)
 - **supply** = Circulating token supply (decreases with burns)
 - **F%** = Discount factor (0.8 → 1.0 → 1.2+)
 
@@ -478,7 +486,7 @@ NEXUS_FIREBASE_SA_PATH=<path-to-service-account.json>
 - **Wallet:** Dynamic
 - **Agent:** Nexus (OpenClaw/Clawdbot)
 - **Chain:** Base (L2)
-- **Yield:** Yearn V3 (direct ERC-4626 integration)
+- **Yield:** Yearn Finance V3 (direct ERC-4626 integration)
 
 ---
 
@@ -517,6 +525,8 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 
 ## Vault Configuration
 
+![Create Vault](docs/images/create-vault.png)
+
 When creating a vault, you can configure:
 
 | # | Parameter | Description | Example |
@@ -530,7 +540,7 @@ When creating a vault, you can configure:
 | 7 | `initialFactorBps` | Initial exit discount | 8000 (80% = 20% loss) |
 | 8 | `projectFeeBps` | Project's yield share | 500 (5%) |
 | 9 | `projectWallet` | Fee recipient (multisig) | `0x...` |
-| 10 | `yieldVault` | Yearn V3 vault | `0xb13CF...` |
+| 10 | `yieldVault` | Yearn Finance V3 vault | `0xb13CF...` |
 | 11 | `curveType` | Factor curve | LINEAR or EXPONENTIAL |
 
 ### Token Price Calculation
@@ -572,7 +582,7 @@ BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
 BASESCAN_API_KEY=...
 ```
 
-2. Find a Yearn V3 vault for your asset:
+2. Find a Yearn Finance V3 vault for your asset:
    - Check https://yearn.fi/v3 → Base
    - Or query the registry: `0xd40ecF29e001c76Dcc4cC0D9cd50520CE845B038`
 
