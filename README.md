@@ -263,7 +263,7 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 
 | Contract | Address | Verified |
 |----------|---------|----------|
-| **VaultFactory v2** | [`0xbF283332d69C3494986adF33B43F5E44eab02977`](https://basescan.org/address/0xbF283332d69C3494986adF33B43F5E44eab02977) | ✅ Sourcify |
+| **VaultFactory v3** | [`0x9Df66106201d04CF8398d6387C2D022eb9353c73`](https://basescan.org/address/0x9Df66106201d04CF8398d6387C2D022eb9353c73) | ✅ Sourcify |
 
 **Deployment Details:**
 - Network: Base (Chain ID 8453)
@@ -271,14 +271,17 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - Platform Fee: 1% (100 bps)
 - Platform Wallet: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
 
-### Test Vault (Boulder Token v2)
+### Test Vault (Price Test Token)
 | Contract | Address |
 |----------|---------|
-| Vault | [`0x26a2758df64eb2560561128c42b46a2f7f2cf691`](https://basescan.org/address/0x26a2758df64eb2560561128c42b46a2f7f2cf691) |
-| BTv2 Token | [`0xf142790f37fa6238d6ac95d2bae51dbbd27a4da3`](https://basescan.org/address/0xf142790f37fa6238d6ac95d2bae51dbbd27a4da3) |
+| Vault | [`0x6197714ba09e54050352b612d7e7fb3ca224963d`](https://basescan.org/address/0x6197714ba09e54050352b612d7e7fb3ca224963d) |
+| PTT Token | [`0x547130fa7297b5d234e2777e72f1b4240faab44e`](https://basescan.org/address/0x547130fa7297b5d234e2777e72f1b4240faab44e) |
 
-- Token decimals: 6 (matches USDC)
-- Yield source: Yearn V3 (True Yield Dollar)
+**Token Price Example:**
+- Cap: 100 USDC
+- Max Supply: 1000 PTT
+- Token Price: 0.10 USDC (calculated: cap / maxSupply)
+- Test: 0.5 USDC → 5 PTT ✅
 
 ---
 

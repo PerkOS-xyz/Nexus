@@ -12,7 +12,8 @@ interface IVaultFactory {
         string name;              // Token name
         string symbol;            // Token symbol
         address depositAsset;     // e.g., USDC
-        uint256 cap;              // Maximum raise amount
+        uint256 cap;              // Maximum raise amount (in deposit asset units)
+        uint256 maxTokenSupply;   // Total tokens to issue (tokenPrice = cap / maxTokenSupply)
         uint256 unlockTimestamp;  // When exits become available
         uint256 initialFactorBps; // Initial discount factor (e.g., 8000 = 80%)
         uint256 projectFeeBps;    // Project share of yield (basis points)

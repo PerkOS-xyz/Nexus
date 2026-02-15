@@ -37,8 +37,11 @@ contract Vault is IVault, ReentrancyGuard {
     /// @notice The Yearn V3 vault (ERC-4626)
     IERC4626 public immutable yieldVault;
     
-    /// @notice Maximum raise cap
+    /// @notice Maximum raise cap (in deposit asset units)
     uint256 public immutable cap;
+    
+    /// @notice Maximum token supply to issue
+    uint256 public immutable maxTokenSupply;
     
     /// @notice Timestamp when withdrawals unlock
     uint256 public immutable unlockTimestamp;
@@ -97,6 +100,7 @@ contract Vault is IVault, ReentrancyGuard {
      * @param _symbol Token symbol
      * @param _yieldVault Yearn V3 vault address (ERC-4626)
      * @param _cap Maximum raise amount
+     * @param _maxTokenSupply Total tokens to issue (tokenPrice = cap / maxTokenSupply)
      * @param _unlockTimestamp When withdrawals become available
      * @param _initialFactorBps Initial discount factor (basis points)
      * @param _projectFeeBps Project fee share (basis points)
@@ -111,6 +115,7 @@ contract Vault is IVault, ReentrancyGuard {
         string memory _symbol,
         address _yieldVault,
         uint256 _cap,
+        uint256 _maxTokenSupply,
         uint256 _unlockTimestamp,
         uint256 _initialFactorBps,
         uint256 _projectFeeBps,
@@ -124,6 +129,7 @@ contract Vault is IVault, ReentrancyGuard {
         vaultToken = new VaultToken(_name, _symbol, address(this), assetDecimals);
         yieldVault = IERC4626(_yieldVault);
         cap = _cap;
+        maxTokenSupply = _maxTokenSupply;
         unlockTimestamp = _unlockTimestamp;
         initialFactorBps = _initialFactorBps;
         currentFactorBps = _initialFactorBps;
@@ -137,7 +143,8 @@ contract Vault is IVault, ReentrancyGuard {
     // ============ External Functions ============
 
     /**
-     * @notice Deposit assets and receive vault tokens 1:1
+     * @notice Deposit assets and receive vault tokens based on token price
+     * @dev tokensToMint = amount * maxTokenSupply / cap
      * @param amount Amount of deposit asset to deposit
      */
     function deposit(uint256 amount) external nonReentrant {
@@ -155,14 +162,18 @@ contract Vault is IVault, ReentrancyGuard {
         totalShares += sharesReceived;
         totalPrincipal += amount;
 
-        // Mint vault tokens 1:1
-        vaultToken.mint(msg.sender, amount);
+        // Calculate tokens to mint: amount * maxTokenSupply / cap
+        // This gives tokenPrice = cap / maxTokenSupply
+        uint256 tokensToMint = (amount * maxTokenSupply) / cap;
+        
+        // Mint vault tokens
+        vaultToken.mint(msg.sender, tokensToMint);
 
         // Update state
-        circulatingSupply += amount;
-        totalMinted += amount;
+        circulatingSupply += tokensToMint;
+        totalMinted += tokensToMint;
 
-        emit Deposited(msg.sender, amount, amount);
+        emit Deposited(msg.sender, amount, tokensToMint);
     }
 
     /**
@@ -331,6 +342,21 @@ contract Vault is IVault, ReentrancyGuard {
         if (circulatingSupply == 0) return PRECISION;
         uint256 currentTVL = yieldVault.convertToAssets(totalShares);
         return (currentTVL * PRECISION) / circulatingSupply;
+    }
+
+    /**
+     * @notice Get token price (cap / maxTokenSupply)
+     * @return Price in deposit asset units (scaled by PRECISION)
+     */
+    function getTokenPrice() external view returns (uint256) {
+        return (cap * PRECISION) / maxTokenSupply;
+    }
+
+    /**
+     * @notice Get maximum token supply
+     */
+    function getMaxTokenSupply() external view returns (uint256) {
+        return maxTokenSupply;
     }
 
     // ============ Internal Functions ============

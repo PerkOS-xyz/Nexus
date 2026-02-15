@@ -66,6 +66,7 @@ contract VaultFactory is IVaultFactory, Ownable {
         if (config.yieldVault == address(0)) revert ZeroAddress();
         if (config.projectWallet == address(0)) revert ZeroAddress();
         if (config.cap == 0) revert InvalidConfig();
+        if (config.maxTokenSupply == 0) revert InvalidConfig();
         if (config.unlockTimestamp <= block.timestamp) revert InvalidConfig();
         if (config.initialFactorBps == 0 || config.initialFactorBps > 10000) revert InvalidConfig();
         if (config.projectFeeBps + platformFeeBps > 5000) revert InvalidConfig(); // Max 50% fees
@@ -77,6 +78,7 @@ contract VaultFactory is IVaultFactory, Ownable {
             config.symbol,
             config.yieldVault,
             config.cap,
+            config.maxTokenSupply,
             config.unlockTimestamp,
             config.initialFactorBps,
             config.projectFeeBps,

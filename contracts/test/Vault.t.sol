@@ -18,6 +18,7 @@ contract VaultTest is Test {
     address public user2 = address(0x4444);
 
     uint256 public constant CAP = 100_000 * 1e6; // 100k USDC
+    uint256 public constant MAX_TOKEN_SUPPLY = 1_000_000 * 1e6; // 1M tokens (price = 0.10 USDC)
     uint256 public constant INITIAL_FACTOR = 8000; // 80%
     uint256 public constant PROJECT_FEE = 500; // 5%
     uint256 public constant PLATFORM_FEE = 100; // 1%
@@ -34,6 +35,7 @@ contract VaultTest is Test {
             "TVT",
             address(yieldVault),
             CAP,
+            MAX_TOKEN_SUPPLY,
             block.timestamp + 7 days,
             INITIAL_FACTOR,
             PROJECT_FEE,

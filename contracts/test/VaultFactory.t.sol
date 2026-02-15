@@ -31,6 +31,7 @@ contract VaultFactoryTest is Test {
             symbol: "TVT",
             depositAsset: address(usdc),
             cap: 100_000 * 1e6,
+            maxTokenSupply: 1_000_000 * 1e6, // 1M tokens, price = 0.10 USDC
             unlockTimestamp: block.timestamp + 7 days,
             initialFactorBps: 8000,
             projectFeeBps: 500,
@@ -53,6 +54,7 @@ contract VaultFactoryTest is Test {
             symbol: "TVT",
             depositAsset: address(0), // Invalid
             cap: 100_000 * 1e6,
+            maxTokenSupply: 1_000_000 * 1e6,
             unlockTimestamp: block.timestamp + 7 days,
             initialFactorBps: 8000,
             projectFeeBps: 500,
