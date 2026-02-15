@@ -38,22 +38,26 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 │                     NEXUS FRONTEND (NexusApp)                        │
 │              Next.js 16 + Tailwind + shadcn/ui + Dynamic             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • User logs in with wallet (Dynamic)                               │
-│  • Chat interface to talk with Nexus agent                          │
-│  • Pay $1 USDC via x402 to deploy vault                             │
-│  • View deployed vaults + deposit/withdraw                          │
+│  1. User logs in with wallet (Dynamic)                              │
+│  2. User accesses Chat Interface                                    │
+│  3. Chat sends messages to Nexus Agent via Plugin                   │
+│  4. User pays $1 USDC via x402 when prompted                        │
+│  5. View deployed vaults + deposit/withdraw                         │
 └────────────────────────────┬────────────────────────────────────────┘
-                             │ WebSocket / API
+                             │
+                             │ Nexus Plugin (WebSocket/API)
                              ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                       NEXUS AGENT                                    │
 │                    (OpenClaw / Clawdbot)                             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • Receives chat messages from logged-in users                      │
-│  • Extracts vault parameters from natural language                  │
+│  • Receives chat messages from Frontend via Plugin                  │
+│  • Understands user intent via natural language                     │
+│  • Extracts vault parameters (name, cap, APY, duration)             │
 │  • Generates x402 payment request ($1 USDC)                         │
 │  • Verifies payment via stack.perkos.xyz facilitator                │
 │  • Deploys vault using agent wallet (pays gas)                      │
+│  • Saves deployment to Firebase                                     │
 │  • Returns vault + token addresses to user                          │
 └────────────────────────────┬────────────────────────────────────────┘
                              │
@@ -63,11 +67,22 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 │   x402 Payment  │ │    Firebase     │ │  Smart Contracts│
 │ stack.perkos.xyz│ │   (Firestore)   │ │     (Base)      │
 ├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ • $1 USDC fee   │ │ • Vault records │ │ • VaultFactory  │
-│ • EIP-712 sigs  │ │ • User history  │ │ • Vault         │
-│ • Facilitator   │ │ • Deployments   │ │ • VaultToken    │
+│ • $1 USDC fee   │ │ • users/        │ │ • VaultFactory  │
+│ • EIP-712 sigs  │ │ • deployments/  │ │ • Vault         │
+│ • Facilitator   │ │ • wallet→vaults │ │ • VaultToken    │
 └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
+
+### Component Details
+
+| Component | Technology | Description |
+|-----------|------------|-------------|
+| **NexusApp** | Next.js 16 + Dynamic | Frontend with chat UI |
+| **Nexus Plugin** | WebSocket/API | Connects frontend ↔ agent |
+| **Nexus Agent** | OpenClaw/Clawdbot | AI agent that deploys vaults |
+| **x402 Payment** | stack.perkos.xyz | $1 USDC service fee |
+| **Firebase** | Firestore | Stores user → deployments |
+| **Contracts** | Base Mainnet | VaultFactory + Vault + Token |
 
 ---
 
@@ -75,14 +90,48 @@ Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the ge
 
 ```
 1. Login              →  User connects wallet via Dynamic
-2. Chat with Nexus    →  User describes token launch in natural language
-3. Nexus Configures   →  Agent extracts vault parameters from conversation
-4. Pay Service Fee    →  User pays $1 USDC via x402 (stack.perkos.xyz facilitator)
-5. Nexus Deploys      →  Agent deploys VaultFactory.createVault()
-6. Receive Addresses  →  Vault + Token contract addresses returned
-7. Share & Deposit    →  Users can deposit tokens, receive vault tokens
-8. Earn Yield         →  Vault factor increases over time via Yearn V3
-9. Withdraw           →  Burn vault tokens, receive principal + yield
+2. Access Chat        →  User opens chat interface in NexusApp
+3. Chat with Nexus    →  User describes token launch in natural language
+                         "I want to create a token called XYZ with 1M supply..."
+4. Nexus Configures   →  Agent extracts vault parameters from conversation
+5. Pay Service Fee    →  User pays $1 USDC via x402 (stack.perkos.xyz facilitator)
+6. Nexus Deploys      →  Agent deploys VaultFactory.createVault()
+7. Save to Firebase   →  Agent saves deployment to Firestore (user wallet → contracts)
+8. Receive Addresses  →  Vault + Token contract addresses returned in chat
+9. View Deployments   →  User sees their vaults in "My Vaults" section
+10. Share & Deposit   →  Users can deposit tokens, receive vault tokens
+11. Earn Yield        →  Vault factor increases over time via Yearn V3
+12. Withdraw          →  Burn vault tokens, receive principal + yield
+```
+
+---
+
+## Nexus Plugin
+
+The Nexus Plugin connects the NexusApp frontend to the Nexus Agent.
+
+### Responsibilities
+
+- Authenticate users via wallet signature
+- Send chat messages to Nexus Agent
+- Receive responses and x402 payment requests
+- Handle payment flow and confirmations
+- Stream agent responses to chat UI
+
+### Integration
+
+```
+NexusApp (Frontend)
+    │
+    ├── /chat page
+    │   └── ChatInterface component
+    │       └── useNexusPlugin() hook
+    │           │
+    │           ▼
+    └── Nexus Plugin (WebSocket/API)
+            │
+            ▼
+        Nexus Agent (OpenClaw)
 ```
 
 ---
