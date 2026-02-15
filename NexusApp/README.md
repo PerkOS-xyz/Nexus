@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏦 Nexus
+
+**Sovereign Token Launches with Yield-Backed Floors**
+
+> Built at ETH Boulder 2026
+
+## Overview
+
+Nexus enables fixed-price token launches where 100% of raised capital is deployed to yield protocols. Token holders can exit at any time with a floor price that appreciates as yield accrues.
+
+**Live Demo:** [nexus-ethboulder.netlify.app](https://nexus-ethboulder.netlify.app)
+
+## Features
+
+- **🤖 AI-Powered Deployment** - Chat with Nexus Agent to create vaults using natural language
+- **📈 Yield-Backed Floors** - All deposits earn yield via Yearn V3 (ERC-4626)
+- **🛡️ Time-Locked Protection** - Configurable lock periods prevent dumps
+- **⚡ Instant Launch** - Just $1 USDC to deploy (via x402)
+- **🎙️ Voice Integration** - Monitor vault health via OmiMesh AI wearables
+
+## How It Works
+
+1. **Deploy** - Set a fixed token price and funding cap. Launch your ERC-20 via AI or form.
+2. **Deposit** - 100% of USDC raised is routed to Yearn V3 vaults for yield.
+3. **Appreciate** - Yield accrues to the vault, increasing the TVL/supply ratio.
+4. **Exit** - Burn tokens to claim USDC. Dynamic Factor (F%) rewards conviction.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Blockchain | Base L2 |
+| AI Agent | OpenClaw + Anthropic Claude |
+| Yield | Yearn V3 (ERC-4626) |
+| Payments | x402 Protocol |
+| Frontend | Next.js 15, Dynamic.xyz |
+| Storage | Firebase Firestore |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env.local
+# Add your API keys
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=your_dynamic_id
+OPENAI_API_KEY=your_openai_key
+FIREBASE_SERVICE_ACCOUNT=your_firebase_sa
+```
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Frontend                              │
+│  Next.js + Dynamic.xyz Wallet + AI Chat Interface           │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│                    AI Agent Layer                            │
+│  OpenClaw + Claude → Vault Creation + Contract Deployment   │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│                    Smart Contracts                           │
+│  NexusVaultFactory → NexusVault → Yearn V3 (ERC-4626)       │
+└─────────────────────────────────────────────────────────────┘
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Team
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Julio M Cruz** - [@zkNexus](https://twitter.com/zkNexus)
 
-## Deploy on Vercel
+## Links
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [GitHub](https://github.com/PerkOS-xyz/Nexus)
+- [Twitter](https://twitter.com/PerkOS_xyz)
+- [ETH Boulder 2026](https://ethboulder.com)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
