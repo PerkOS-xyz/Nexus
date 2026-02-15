@@ -98,7 +98,7 @@ export async function GET() {
       signal: AbortSignal.timeout(5000),
     });
     health.agentStatus = res.ok ? 'connected' : `error-${res.status}`;
-  } catch {
+  } catch (err) {
     health.agentStatus = 'unreachable';
   }
 
