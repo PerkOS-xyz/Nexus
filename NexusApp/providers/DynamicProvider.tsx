@@ -30,7 +30,7 @@ export default function DynamicProvider({
         environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID || "placeholder",
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
-          evmNetworks: [baseMainnet],
+          evmNetworks: () => [baseMainnet],
         },
       }}
     >
