@@ -269,7 +269,41 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - Network: Base (Chain ID 8453)
 - Deployer/Owner: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
 - Platform Fee: 1% (100 bps)
-- Platform Wallet: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
+
+---
+
+## Vault Configuration
+
+When creating a vault, you can configure:
+
+| # | Parameter | Description | Example |
+|---|-----------|-------------|---------|
+| 1 | `name` | Token name | "My Project Token" |
+| 2 | `symbol` | Token symbol | "MPT" |
+| 3 | `depositAsset` | Asset to raise (USDC) | `0x833589fCD...` |
+| 4 | `cap` | Maximum raise amount | 100,000 USDC |
+| 5 | `maxTokenSupply` | Total tokens to issue | 1,000,000 tokens |
+| 6 | `unlockTimestamp` | When exits unlock | Unix timestamp |
+| 7 | `initialFactorBps` | Initial exit discount | 8000 (80% = 20% loss) |
+| 8 | `projectFeeBps` | Project's yield share | 500 (5%) |
+| 9 | `projectWallet` | Fee recipient (multisig) | `0x...` |
+| 10 | `yieldVault` | Yearn V3 vault | `0xb13CF...` |
+| 11 | `curveType` | Factor curve | LINEAR or EXPONENTIAL |
+
+### Token Price Calculation
+
+```
+tokenPrice = cap / maxTokenSupply
+```
+
+**Example:**
+- Cap: 100,000 USDC
+- Max Supply: 1,000,000 tokens
+- **Token Price: 0.10 USDC**
+
+When user deposits 10 USDC → receives 100 tokens
+
+---
 
 ### Test Vault (Price Test Token)
 | Contract | Address |
@@ -277,11 +311,10 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 | Vault | [`0x6197714ba09e54050352b612d7e7fb3ca224963d`](https://basescan.org/address/0x6197714ba09e54050352b612d7e7fb3ca224963d) |
 | PTT Token | [`0x547130fa7297b5d234e2777e72f1b4240faab44e`](https://basescan.org/address/0x547130fa7297b5d234e2777e72f1b4240faab44e) |
 
-**Token Price Example:**
-- Cap: 100 USDC
-- Max Supply: 1000 PTT
-- Token Price: 0.10 USDC (calculated: cap / maxSupply)
-- Test: 0.5 USDC → 5 PTT ✅
+**Test Results:**
+- Cap: 100 USDC | Max Supply: 1000 PTT
+- Token Price: 0.10 USDC
+- Deposited 0.5 USDC → Received 5 PTT ✅
 
 ---
 
