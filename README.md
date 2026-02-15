@@ -8,13 +8,13 @@ Built for **ETH Boulder 2026** 🏔️
 
 ## Overview
 
-Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with time-locked exits. Deposits are deployed into a yield orchestrator, and the generated yield improves exit terms over time.
+Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with time-locked exits. Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
 
 ### Key Features
 
 - **Fixed-price token sales** with configurable cap
 - **Time-locked exits** with dynamic discount factor
-- **Yield orchestrator integration** (funds fully deployed to DeFi)
+- **Direct Yearn V3 integration** via ERC-4626 (no intermediary)
 - **Voice-controlled queries** via AI wearable
 - **Linear or exponential exit curves**
 
@@ -42,12 +42,43 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 └─────────────────────────────┬───────────────────────────────┘
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                 ORCHESTRATOR (Yearn V3)                      │
-└─────────────────────────────┬───────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              EXTERNAL: Yearn Vaults / DeFi                   │
+│                  YEARN V3 VAULT (ERC-4626)                   │
+│                    Direct Integration                        │
 └─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Yearn V3 Integration
+
+The Vault contract integrates **directly** with Yearn V3 vaults using the ERC-4626 standard. No intermediary orchestrator needed.
+
+### Base Mainnet Addresses
+
+| Contract | Address |
+|----------|---------|
+| **Yearn Registry** | `0xd40ecF29e001c76Dcc4cC0D9cd50520CE845B038` |
+| **Role Manager** | `0xea3481244024E2321cc13AcAa80df1050f1fD456` |
+| **VaultFactory (Yearn)** | `0x770D0d1Fb036483Ed4AbB6d53c1C88fb277D812F` |
+| **4626 Router** | `0x1112dbCF805682e828606f74AB717abf4b4FD8DE` |
+
+### How It Works
+
+1. User deposits USDC → Vault mints VaultTokens 1:1
+2. Vault deposits USDC into Yearn V3 vault → receives yield-bearing shares
+3. Yield accrues in Yearn vault over time
+4. On withdrawal: Vault redeems shares, applies discount factor, transfers USDC
+
+```solidity
+// Vault.sol - Direct ERC-4626 integration
+IERC4626 public immutable yieldVault;
+
+function deposit(uint256 amount) external {
+    depositAsset.safeTransferFrom(msg.sender, address(this), amount);
+    depositAsset.approve(address(yieldVault), amount);
+    uint256 shares = yieldVault.deposit(amount, address(this));
+    // ...
+}
 ```
 
 ---
@@ -61,7 +92,7 @@ payout = (TVL / supply) × tokens_to_burn × F%
 ```
 
 Where:
-- **TVL** = Total Value Locked (grows with yield)
+- **TVL** = Total Value Locked (grows with yield from Yearn)
 - **supply** = Circulating token supply (decreases with burns)
 - **F%** = Discount factor (0.8 → 1.0 → 1.2+)
 
@@ -96,15 +127,13 @@ struct VaultConfig {
     string name;              // Token name
     string symbol;            // Token symbol
     address depositAsset;     // e.g., USDC
-    uint256 buyPrice;         // Fixed price per token
     uint256 cap;              // Maximum raise amount
     uint256 unlockTimestamp;  // When exits become available
     uint256 initialFactorBps; // Initial discount factor (e.g., 8000 = 80%)
     uint256 projectFeeBps;    // Project share of yield
-    uint256 platformFeeBps;   // Platform fee (default 100 = 1%)
-    CurveType curveType;      // LINEAR or EXPONENTIAL
-    address orchestrator;     // Yield orchestrator address
     address projectWallet;    // Receives project fees
+    address yieldVault;       // Yearn V3 vault address (ERC-4626)
+    CurveType curveType;      // LINEAR or EXPONENTIAL
 }
 
 function createVault(VaultConfig calldata config) external returns (address vault, address token);
@@ -115,16 +144,22 @@ function createVault(VaultConfig calldata config) external returns (address vaul
 Core vault logic: deposits, withdrawals, yield distribution, and factor calculation.
 
 ```solidity
+// State
+IERC4626 public immutable yieldVault;  // Yearn V3 vault
+uint256 public totalPrincipal;          // Deposited principal
+uint256 public totalShares;             // Shares in yield vault
+
 // Core functions
 function deposit(uint256 amount) external;
 function withdraw(uint256 tokenAmount) external;
-function recalculateFactor() external;
 function harvestYield() external;
+function recalculateFactor() external;
 
 // View functions
-function getWithdrawAmount(uint256 tokenAmount) external view returns (uint256);
+function getTVL() external view returns (uint256);
+function getAccumulatedYield() external view returns (uint256);
+function previewWithdraw(uint256 tokenAmount) external view returns (uint256);
 function getCurrentFactor() external view returns (uint256);
-function getValuePerToken() external view returns (uint256);
 ```
 
 ---
@@ -164,34 +199,32 @@ Case C: F = 1.20 (120%)
   → Principal untouched ✓
 ```
 
-**Key insight:** When F < 1.0, early exiters subsidize the treasury, protecting later exiters and allowing F to rise toward 1.0+ over time.
-
 ---
 
 ## Project Structure
 
 ```
 ethboulder-2026/
-├── contracts/          # Smart contracts (Foundry)
+├── contracts/              # Smart contracts (Foundry)
 │   ├── src/
 │   │   ├── VaultFactory.sol
 │   │   ├── Vault.sol
 │   │   ├── VaultToken.sol
 │   │   └── interfaces/
+│   │       ├── IERC4626.sol    # ERC-4626 interface
+│   │       ├── IVault.sol
+│   │       ├── IVaultFactory.sol
+│   │       └── IVaultToken.sol
 │   ├── test/
+│   │   ├── Vault.t.sol
+│   │   ├── VaultFactory.t.sol
+│   │   └── mocks/
+│   │       ├── MockERC20.sol
+│   │       └── MockERC4626.sol
 │   └── script/
-├── app/                # Frontend (Next.js)
-│   ├── src/
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   └── lib/
-├── agent/              # AI agent skill
-│   ├── SKILL.md
-│   └── scripts/
-├── orchestrator/       # Yearn integration (submodule)
-├── docs/               # Documentation
-└── .github/            # CI/CD
+├── app/                    # Frontend (Next.js)
+├── agent/                  # AI agent skill
+└── docs/                   # Documentation
 ```
 
 ---
@@ -202,25 +235,53 @@ ethboulder-2026/
 - **Frontend:** Next.js 14, TypeScript, Tailwind, shadcn/ui, wagmi, viem
 - **Wallet:** RainbowKit
 - **Chain:** Base (L2)
-- **Yield:** Yearn V3 via Orchestrator
+- **Yield:** Yearn V3 (direct ERC-4626 integration)
 
 ---
 
 ## Quick Start
 
 ```bash
-# Clone with submodules
-git clone --recursive https://github.com/PerkOS-xyz/ethboulder-2026
+# Clone
+git clone https://github.com/PerkOS-xyz/ethboulder-2026
 cd ethboulder-2026
 
-# Contracts
-cd contracts && forge install && forge test
+# Install dependencies
+cd contracts
+forge install
 
-# Frontend
-cd ../app && pnpm install && pnpm dev
+# Run tests
+forge test
 
-# Local chain
-anvil --fork-url https://base.llamarpc.com
+# Deploy to Base mainnet
+forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
+```
+
+---
+
+## Deployment
+
+### Prerequisites
+
+1. Set environment variables in `contracts/.env`:
+```bash
+PRIVATE_KEY=0x...
+BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
+BASESCAN_API_KEY=...
+```
+
+2. Find a Yearn V3 vault for your asset:
+   - Check https://yearn.fi/v3 → Base
+   - Or query the registry: `0xd40ecF29e001c76Dcc4cC0D9cd50520CE845B038`
+
+### Deploy
+
+```bash
+# Deploy VaultFactory
+forge script script/Deploy.s.sol:DeployFactory --rpc-url base --broadcast --verify
+
+# Create a vault
+forge script script/Deploy.s.sol:CreateVault --rpc-url base --broadcast
 ```
 
 ---
@@ -230,7 +291,7 @@ anvil --fork-url https://base.llamarpc.com
 ```bash
 # contracts/.env
 PRIVATE_KEY=0x...
-RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
+BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
 BASESCAN_API_KEY=...
 
 # app/.env.local
