@@ -84,7 +84,13 @@ Or tell me about your token and I'll help you configure the parameters.`,
 
 // Health check
 export async function GET() {
-  const health = {
+  const health: {
+    status: string;
+    agentUrl: string;
+    hasToken: boolean;
+    timestamp: string;
+    agentStatus?: string;
+  } = {
     status: 'ok',
     agentUrl: NEXUS_AGENT_URL,
     hasToken: !!NEXUS_AGENT_TOKEN,
