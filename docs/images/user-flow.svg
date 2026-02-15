@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" opacity="0.5"/>
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" opacity="0.5"/>
+    </marker>
+    <marker id="arr-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee" opacity="0.5"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="500" rx="16" fill="url(#bg4)"/>
+  <rect width="960" height="500" rx="16" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="480" y="30" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="700">Nexus User Flow</text>
+  <text x="480" y="48" text-anchor="middle" fill="#64748b" font-size="11">From wallet connection to yield withdrawal</text>
+
+  <!-- ═══════════ ROW 1: USER (Blue) ═══════════ -->
+
+  <!-- Step 1 -->
+  <rect x="70" y="62" width="248" height="62" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <circle cx="93" cy="93" r="13" fill="#3b82f6"/>
+  <text x="93" y="97" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">1</text>
+  <text x="115" y="84" fill="#f8fafc" font-size="12" font-weight="600">Connect Wallet</text>
+  <text x="115" y="100" fill="#94a3b8" font-size="10">Login via Dynamic</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="318" y1="93" x2="338" y2="93" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 2 -->
+  <rect x="348" y="62" width="248" height="62" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <circle cx="371" cy="93" r="13" fill="#3b82f6"/>
+  <text x="371" y="97" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">2</text>
+  <text x="393" y="84" fill="#f8fafc" font-size="12" font-weight="600">Open Chat</text>
+  <text x="393" y="100" fill="#94a3b8" font-size="10">Access Nexus interface</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="596" y1="93" x2="616" y2="93" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 3 -->
+  <rect x="626" y="62" width="248" height="62" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <circle cx="649" cy="93" r="13" fill="#3b82f6"/>
+  <text x="649" y="97" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">3</text>
+  <text x="671" y="84" fill="#f8fafc" font-size="12" font-weight="600">Describe Token</text>
+  <text x="671" y="100" fill="#94a3b8" font-size="10">Natural language config</text>
+
+  <!-- Row connector 1→2 -->
+  <path d="M 874,124 L 874,140 L 194,140 L 194,156" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#arr-blue)"/>
+
+  <!-- ═══════════ ROW 2: AGENT (Purple) ═══════════ -->
+
+  <!-- Step 4 -->
+  <rect x="70" y="162" width="248" height="62" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+  <circle cx="93" cy="193" r="13" fill="#a855f7"/>
+  <text x="93" y="197" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">4</text>
+  <text x="115" y="184" fill="#f8fafc" font-size="12" font-weight="600">Parse Intent</text>
+  <text x="115" y="200" fill="#94a3b8" font-size="10">Agent extracts parameters</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="318" y1="193" x2="338" y2="193" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 5 -->
+  <rect x="348" y="162" width="248" height="62" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+  <circle cx="371" cy="193" r="13" fill="#a855f7"/>
+  <text x="371" y="197" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">5</text>
+  <text x="393" y="184" fill="#f8fafc" font-size="12" font-weight="600">Pay $1 USDC</text>
+  <text x="393" y="200" fill="#94a3b8" font-size="10">x402 payment protocol</text>
+
+  <!-- Arrow 5→6 -->
+  <line x1="596" y1="193" x2="616" y2="193" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 6 -->
+  <rect x="626" y="162" width="248" height="62" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+  <circle cx="649" cy="193" r="13" fill="#a855f7"/>
+  <text x="649" y="197" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">6</text>
+  <text x="671" y="184" fill="#f8fafc" font-size="12" font-weight="600">Deploy Vault</text>
+  <text x="671" y="200" fill="#94a3b8" font-size="10">createVault() on Base</text>
+
+  <!-- Row connector 2→3 -->
+  <path d="M 874,224 L 874,240 L 194,240 L 194,256" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#arr-purple)"/>
+
+  <!-- ═══════════ ROW 3: SYSTEM (Cyan) ═══════════ -->
+
+  <!-- Step 7 -->
+  <rect x="70" y="262" width="248" height="62" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
+  <circle cx="93" cy="293" r="13" fill="#22d3ee"/>
+  <text x="93" y="297" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">7</text>
+  <text x="115" y="284" fill="#f8fafc" font-size="12" font-weight="600">Save Record</text>
+  <text x="115" y="300" fill="#94a3b8" font-size="10">Wallet → Firestore</text>
+
+  <!-- Arrow 7→8 -->
+  <line x1="318" y1="293" x2="338" y2="293" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 8 -->
+  <rect x="348" y="262" width="248" height="62" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
+  <circle cx="371" cy="293" r="13" fill="#22d3ee"/>
+  <text x="371" y="297" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">8</text>
+  <text x="393" y="284" fill="#f8fafc" font-size="12" font-weight="600">Return Addresses</text>
+  <text x="393" y="300" fill="#94a3b8" font-size="10">Vault + Token contracts</text>
+
+  <!-- Arrow 8→9 -->
+  <line x1="596" y1="293" x2="616" y2="293" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 9 -->
+  <rect x="626" y="262" width="248" height="62" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
+  <circle cx="649" cy="293" r="13" fill="#22d3ee"/>
+  <text x="649" y="297" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">9</text>
+  <text x="671" y="284" fill="#f8fafc" font-size="12" font-weight="600">View Vaults</text>
+  <text x="671" y="300" fill="#94a3b8" font-size="10">Dashboard display</text>
+
+  <!-- Row connector 3→4 -->
+  <path d="M 874,324 L 874,340 L 194,340 L 194,356" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#arr-cyan)"/>
+
+  <!-- ═══════════ ROW 4: LIFECYCLE (Green) ═══════════ -->
+
+  <!-- Step 10 -->
+  <rect x="70" y="362" width="248" height="62" rx="8" fill="#1e293b" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="93" cy="393" r="13" fill="#22c55e"/>
+  <text x="93" y="397" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">10</text>
+  <text x="115" y="384" fill="#f8fafc" font-size="12" font-weight="600">Deposit USDC</text>
+  <text x="115" y="400" fill="#94a3b8" font-size="10">Receive vault tokens</text>
+
+  <!-- Arrow 10→11 -->
+  <line x1="318" y1="393" x2="338" y2="393" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 11 -->
+  <rect x="348" y="362" width="248" height="62" rx="8" fill="#1e293b" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="371" cy="393" r="13" fill="#22c55e"/>
+  <text x="371" y="397" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">11</text>
+  <text x="393" y="384" fill="#f8fafc" font-size="12" font-weight="600">Earn Yield</text>
+  <text x="393" y="400" fill="#94a3b8" font-size="10">Yearn Finance V3 accrues</text>
+
+  <!-- Arrow 11→12 -->
+  <line x1="596" y1="393" x2="616" y2="393" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 12 -->
+  <rect x="626" y="362" width="248" height="62" rx="8" fill="#1e293b" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="649" cy="393" r="13" fill="#22c55e"/>
+  <text x="649" y="397" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">12</text>
+  <text x="671" y="384" fill="#f8fafc" font-size="12" font-weight="600">Withdraw</text>
+  <text x="671" y="400" fill="#94a3b8" font-size="10">Burn tokens → USDC + yield</text>
+
+  <!-- ═══════════ LEGEND ═══════════ -->
+  <circle cx="280" cy="460" r="5" fill="#3b82f6"/>
+  <text x="292" y="464" fill="#94a3b8" font-size="10" font-weight="600">User</text>
+
+  <circle cx="370" cy="460" r="5" fill="#a855f7"/>
+  <text x="382" y="464" fill="#94a3b8" font-size="10" font-weight="600">Agent</text>
+
+  <circle cx="470" cy="460" r="5" fill="#22d3ee"/>
+  <text x="482" y="464" fill="#94a3b8" font-size="10" font-weight="600">System</text>
+
+  <circle cx="575" cy="460" r="5" fill="#22c55e"/>
+  <text x="587" y="464" fill="#94a3b8" font-size="10" font-weight="600">Token Lifecycle</text>
+</svg>

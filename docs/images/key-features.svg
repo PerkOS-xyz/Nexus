@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 310" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="310" rx="16" fill="url(#bg5)"/>
+  <rect width="960" height="310" rx="16" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- ═══════════ ROW 1 ═══════════ -->
+
+  <!-- Card 1: AI-Powered Deploy -->
+  <rect x="30" y="20" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="62" cy="62" r="20" fill="#3b82f6" opacity="0.15"/>
+  <circle cx="62" cy="62" r="20" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <!-- Chat icon -->
+  <rect x="51" y="52" width="22" height="16" rx="3" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <polygon points="58,68 62,74 66,68" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="56" y1="58" x2="68" y2="58" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="56" y1="63" x2="64" y2="63" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="92" y="52" fill="#f8fafc" font-size="14" font-weight="700">AI-Powered Deploy</text>
+  <text x="92" y="70" fill="#94a3b8" font-size="11">Chat with Nexus agent to</text>
+  <text x="92" y="85" fill="#94a3b8" font-size="11">configure and launch vaults</text>
+
+  <!-- Card 2: Fixed-Price Sales -->
+  <rect x="340" y="20" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="372" cy="62" r="20" fill="#22c55e" opacity="0.15"/>
+  <circle cx="372" cy="62" r="20" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+  <!-- Dollar icon -->
+  <text x="372" y="69" text-anchor="middle" fill="#22c55e" font-size="20" font-weight="700">$</text>
+  <text x="402" y="52" fill="#f8fafc" font-size="14" font-weight="700">Fixed-Price Sales</text>
+  <text x="402" y="70" fill="#94a3b8" font-size="11">Configurable cap, price,</text>
+  <text x="402" y="85" fill="#94a3b8" font-size="11">and max token supply</text>
+
+  <!-- Card 3: Time-Locked Exits -->
+  <rect x="650" y="20" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="682" cy="62" r="20" fill="#f59e0b" opacity="0.15"/>
+  <circle cx="682" cy="62" r="20" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+  <!-- Clock icon -->
+  <circle cx="682" cy="62" r="11" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+  <line x1="682" y1="62" x2="682" y2="55" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="682" y1="62" x2="688" y2="65" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="712" y="52" fill="#f8fafc" font-size="14" font-weight="700">Time-Locked Exits</text>
+  <text x="712" y="70" fill="#94a3b8" font-size="11">Dynamic discount factor</text>
+  <text x="712" y="85" fill="#94a3b8" font-size="11">evolves with withdrawals</text>
+
+  <!-- ═══════════ ROW 2 ═══════════ -->
+
+  <!-- Card 4: Yearn Finance V3 -->
+  <rect x="30" y="165" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="62" cy="207" r="20" fill="#8b5cf6" opacity="0.15"/>
+  <circle cx="62" cy="207" r="20" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+  <!-- Yield/arrow-up icon -->
+  <line x1="62" y1="217" x2="62" y2="198" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+  <polyline points="55,204 62,197 69,204" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="92" y="197" fill="#f8fafc" font-size="14" font-weight="700">Yearn Finance V3</text>
+  <text x="92" y="215" fill="#94a3b8" font-size="11">Direct ERC-4626 yield vault</text>
+  <text x="92" y="230" fill="#94a3b8" font-size="11">integration, no middleman</text>
+
+  <!-- Card 5: x402 Payments -->
+  <rect x="340" y="165" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="372" cy="207" r="20" fill="#ec4899" opacity="0.15"/>
+  <circle cx="372" cy="207" r="20" fill="none" stroke="#ec4899" stroke-width="1.5"/>
+  <!-- Lightning bolt icon -->
+  <polygon points="375,195 369,209 374,209 369,219 379,205 374,205" fill="#ec4899" stroke="none"/>
+  <text x="402" y="197" fill="#f8fafc" font-size="14" font-weight="700">x402 Payments</text>
+  <text x="402" y="215" fill="#94a3b8" font-size="11">$1 USDC launch fee via</text>
+  <text x="402" y="230" fill="#94a3b8" font-size="11">stack.perkos.xyz facilitator</text>
+
+  <!-- Card 6: Dual Exit Curves -->
+  <rect x="650" y="165" width="280" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <circle cx="682" cy="207" r="20" fill="#06b6d4" opacity="0.15"/>
+  <circle cx="682" cy="207" r="20" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <!-- Chart/curve icon -->
+  <polyline points="672,217 677,212 682,207 688,200 692,197" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="672,217 678,216 684,213 688,206 692,197" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3,2"/>
+  <text x="712" y="197" fill="#f8fafc" font-size="14" font-weight="700">Dual Exit Curves</text>
+  <text x="712" y="215" fill="#94a3b8" font-size="11">Linear or exponential</text>
+  <text x="712" y="230" fill="#94a3b8" font-size="11">factor progression</text>
+</svg>
