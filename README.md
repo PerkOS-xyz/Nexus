@@ -173,58 +173,103 @@ You can also use voice commands:
 
 ## System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     NEXUS FRONTEND (NexusApp)                    │
-│              Next.js 16 + Tailwind + shadcn/ui + Dynamic         │
-├─────────────────────────────────────────────────────────────────┤
-│  • Multi-step vault creation form                               │
-│  • AI chat interface                                            │
-│  • Wallet connection (Dynamic)                                  │
-│  • Risk disclaimers & compliance                                │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             │ HTTP API (OpenAI-compatible)
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                       NEXUS AGENT                                │
-│                    (OpenClaw / Clawdbot)                         │
-├─────────────────────────────────────────────────────────────────┤
-│  • Receives chat messages from Frontend                         │
-│  • Extracts vault parameters via NLP                            │
-│  • Deploys vaults using nexus-vault skill                       │
-│  • Saves deployments to Firebase                                │
-│  • Returns vault + token addresses                              │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│   x402 Payment  │ │    Firebase     │ │  Smart Contracts│
-│ stack.perkos.xyz│ │   (Firestore)   │ │     (Base)      │
-├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ • $1 USDC fee   │ │ • users/        │ │ • VaultFactory  │
-│ • EIP-712 sigs  │ │ • deployments/  │ │ • Vault         │
-│ • Facilitator   │ │ • wallet→vaults │ │ • VaultToken    │
-└─────────────────┘ └─────────────────┘ └─────────────────┘
+```mermaid
+flowchart TB
+    subgraph Frontend["🖥️ NEXUS FRONTEND (NexusApp)"]
+        F1[Multi-step vault creation form]
+        F2[AI chat interface]
+        F3[Wallet connection - Dynamic]
+        F4[Risk disclaimers & compliance]
+    end
+
+    subgraph Agent["🤖 NEXUS AGENT (OpenClaw)"]
+        A1[Receives chat messages]
+        A2[Extracts vault parameters via NLP]
+        A3[Deploys vaults using nexus-vault skill]
+        A4[Saves deployments to Firebase]
+        A5[Returns vault + token addresses]
+    end
+
+    subgraph Services["⚡ External Services"]
+        subgraph X402["x402 Payment"]
+            X1[stack.perkos.xyz]
+            X2[$1 USDC fee]
+            X3[EIP-712 signatures]
+        end
+        
+        subgraph FB["Firebase"]
+            FB1[users/]
+            FB2[deployments/]
+            FB3[wallet → vaults]
+        end
+        
+        subgraph Contracts["Smart Contracts (Base)"]
+            C1[VaultFactory]
+            C2[Vault]
+            C3[VaultToken]
+        end
+    end
+
+    Frontend -->|HTTP API| Agent
+    Agent --> X402
+    Agent --> FB
+    Agent --> Contracts
 ```
 
 ---
 
 ## User Flow
 
+```mermaid
+flowchart LR
+    A[🔗 Connect Wallet] --> B[📝 Create Project]
+    B --> C[💳 Pay $1 Fee]
+    C --> D[🤖 Agent Deploys]
+    D --> E[💾 Save to Firebase]
+    E --> F[📬 Receive Addresses]
+    F --> G[📢 Share & Deposit]
+    G --> H[📈 Earn Yield]
+    H --> I[🔓 Exit]
+
+    subgraph Details
+        B1[Project info: name, description, logo]
+        B2[Vault config: token, cap, duration]
+    end
+    B --- Details
 ```
-1. Connect Wallet     →  User logs in via Dynamic
-2. Create Project     →  Multi-step form or AI chat
-   • Project info (name, description, logo, socials)
-   • Vault config (token, cap, duration)
-3. Pay $1 Fee         →  x402 payment to facilitator
-4. Agent Deploys      →  VaultFactory.createVault() on Base
-5. Save to Firebase   →  Deployment linked to user wallet
-6. Receive Addresses  →  Vault + Token contracts returned
-7. Share & Deposit    →  Community deposits USDC
-8. Earn Yield         →  Yearn V3 generates returns
-9. Exit               →  Burn tokens, receive USDC + yield
+
+---
+
+## Vault Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Agent
+    participant VaultFactory
+    participant Vault
+    participant Yearn
+
+    User->>Frontend: Describe token launch
+    Frontend->>Agent: Send chat message
+    Agent->>Agent: Extract parameters (NLP)
+    Agent->>User: Confirm & request $1 fee
+    User->>Agent: Pay via x402
+    Agent->>VaultFactory: createVault()
+    VaultFactory->>Vault: Deploy new Vault
+    VaultFactory->>Agent: Return addresses
+    Agent->>Frontend: Vault + Token addresses
+    
+    Note over User,Yearn: Deposit Phase
+    User->>Vault: deposit(USDC)
+    Vault->>Yearn: Route to ERC-4626
+    Vault->>User: Mint tokens
+    
+    Note over User,Yearn: Exit Phase
+    User->>Vault: withdraw(tokens)
+    Vault->>Yearn: Redeem shares
+    Vault->>User: Return USDC + yield
 ```
 
 ---
