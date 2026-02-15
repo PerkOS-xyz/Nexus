@@ -12,12 +12,18 @@ interface Message {
   timestamp: Date;
 }
 
-export function ChatInterface() {
+interface ChatInterfaceProps {
+  walletAddress?: string;
+}
+
+export function ChatInterface({ walletAddress }: ChatInterfaceProps) {
+  const shortAddress = walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : '';
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: "👋 Hi! I'm Nexus, your AI assistant for launching Token Vaults.\n\nTell me about the token you want to create. For example:\n\n\"I want to launch a token called Sunrise Token (SUN) to raise 50,000 USDC over 60 days.\"\n\nI'll help you configure the vault and deploy it on Base.",
+      content: `👋 Hi! I'm Nexus, your AI assistant for launching Token Vaults.\n\n${walletAddress ? `✅ Connected: **${shortAddress}**\n\n` : ''}Tell me about the token you want to create. For example:\n\n"I want to launch a token called Sunrise Token (SUN) to raise 50,000 USDC over 60 days."\n\nI'll help you configure the vault and deploy it on Base. Just $1 USDC to launch!`,
       timestamp: new Date(),
     }
   ]);
