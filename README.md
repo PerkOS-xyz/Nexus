@@ -1,4 +1,4 @@
-# 🏦 Token Vault Launcher
+# 🏦 Nexus - Token Vault Launcher
 
 A decentralized vault system for token launches with yield-backed exits, powered by AI agents.
 
