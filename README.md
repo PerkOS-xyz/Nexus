@@ -259,6 +259,21 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 
 ---
 
+## Deployed Contracts (Base Mainnet)
+
+| Contract | Address | Verified |
+|----------|---------|----------|
+| **VaultFactory** | [`0x27B4dCABF60F55aAD20592C58c2D1E1cd5B08a5A`](https://basescan.org/address/0x27B4dCABF60F55aAD20592C58c2D1E1cd5B08a5A) | ✅ Sourcify |
+
+**Deployment Details:**
+- Network: Base (Chain ID 8453)
+- Deployer: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
+- Platform Fee: 1% (100 bps)
+- Platform Wallet: `0x63d9095efAc96bE8AdA090Da510cb8E8120D6B74`
+- Tx: [`0x63d55f3c...`](https://basescan.org/tx/0x63d55f3c92bf5a73a59bd7fd1bed9c10c663fdfeb0c6161b92ae5b443d5a2f8a)
+
+---
+
 ## Deployment
 
 ### Prerequisites
@@ -278,7 +293,7 @@ BASESCAN_API_KEY=...
 
 ```bash
 # Deploy VaultFactory
-forge script script/Deploy.s.sol:DeployFactory --rpc-url base --broadcast --verify
+forge script script/Deploy.s.sol:DeployScript --rpc-url base --broadcast --verify
 
 # Create a vault
 forge script script/Deploy.s.sol:CreateVault --rpc-url base --broadcast
