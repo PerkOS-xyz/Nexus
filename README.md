@@ -76,7 +76,16 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 │ • $1 USDC fee   │ │ • users/        │ │ • VaultFactory  │
 │ • EIP-712 sigs  │ │ • deployments/  │ │ • Vault         │
 │ • Facilitator   │ │ • wallet→vaults │ │ • VaultToken    │
-└─────────────────┘ └─────────────────┘ └─────────────────┘
+└─────────────────┘ └─────────────────┘ └────────┬────────┘
+                                                  │
+                                                  ▼
+                                         ┌─────────────────┐
+                                         │ YEARN V3 VAULT  │
+                                         │  (ERC-4626)     │
+                                         ├─────────────────┤
+                                         │ • Yield source  │
+                                         │ • Direct integ. │
+                                         └─────────────────┘
 ```
 
 ### Component Details
@@ -94,7 +103,9 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 
 ## User Flow
 
-![Wallet Login](docs/images/Login.png)
+<p align="center">
+  <img src="docs/images/Login.png" alt="Wallet Login" width="250">
+</p>
 
 ```
 1. Login              →  User connects wallet via Dynamic
@@ -214,35 +225,6 @@ Firebase Firestore stores the relationship between user wallets and their deploy
 
 ---
 
-## Old Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      USER INTERFACES                         │
-├─────────────────┬─────────────────┬─────────────────────────┤
-│   Web Frontend  │  Voice Wearable │     Telegram Bot        │
-│   (Next.js)     │   (AI Agent)    │     (Optional)          │
-└────────┬────────┴────────┬────────┴────────────┬────────────┘
-         │                 │                     │
-         ▼                 ▼                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      AI AGENT LAYER                          │
-│           Voice Plugin │ Vault Skill │ Blockchain            │
-└─────────────────────────────┬───────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    SMART CONTRACTS                           │
-│      VaultFactory  │  Vault  │  VaultToken (ERC-20)         │
-└─────────────────────────────┬───────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  YEARN V3 VAULT (ERC-4626)                   │
-│                    Direct Integration                        │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
 ## Yearn Finance V3 Integration
 
 The Vault contract integrates **directly** with Yearn Finance V3 vaults using the ERC-4626 standard. No intermediary orchestrator needed.
@@ -278,6 +260,8 @@ function deposit(uint256 amount) external {
 ---
 
 ## Economic Model
+
+![Payout Formula & Factor Curves](docs/images/payout-formula.svg)
 
 ### Withdrawal Formula
 

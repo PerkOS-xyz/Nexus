@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 520" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="linear-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="exp-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c084fc"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1020" height="520" rx="16" fill="url(#bg)"/>
+  <rect width="1020" height="520" rx="16" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#f8fafc" font-size="20" font-weight="700">Withdrawal Payout Formula</text>
+
+  <!-- Formula Box -->
+  <rect x="80" y="55" width="740" height="60" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="450" y="90" text-anchor="middle" fill="#f8fafc" font-size="22" font-weight="600">
+    payout = (<tspan fill="#22d3ee">TVL</tspan> / <tspan fill="#34d399">Supply</tspan>) <tspan fill="#94a3b8" font-size="20">x</tspan> <tspan fill="#fbbf24">Tokens</tspan> <tspan fill="#94a3b8" font-size="20">x</tspan> <tspan fill="#f472b6">F%</tspan>
+  </text>
+
+  <!-- Variable Descriptions -->
+  <rect x="80" y="130" width="170" height="56" rx="8" fill="#0e3a5e" stroke="#22d3ee" stroke-width="1"/>
+  <text x="165" y="153" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="600">TVL</text>
+  <text x="165" y="173" text-anchor="middle" fill="#94a3b8" font-size="11">Total Value Locked</text>
+
+  <rect x="270" y="130" width="170" height="56" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="1"/>
+  <text x="355" y="153" text-anchor="middle" fill="#34d399" font-size="13" font-weight="600">Supply</text>
+  <text x="355" y="173" text-anchor="middle" fill="#94a3b8" font-size="11">Circulating tokens</text>
+
+  <rect x="460" y="130" width="170" height="56" rx="8" fill="#422006" stroke="#fbbf24" stroke-width="1"/>
+  <text x="545" y="153" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="600">Tokens</text>
+  <text x="545" y="173" text-anchor="middle" fill="#94a3b8" font-size="11">Tokens to burn</text>
+
+  <rect x="650" y="130" width="170" height="56" rx="8" fill="#4a1942" stroke="#f472b6" stroke-width="1"/>
+  <text x="735" y="153" text-anchor="middle" fill="#f472b6" font-size="13" font-weight="600">F% (Factor)</text>
+  <text x="735" y="173" text-anchor="middle" fill="#94a3b8" font-size="11">Dynamic discount</text>
+
+  <!-- Divider -->
+  <line x1="80" y1="205" x2="820" y2="205" stroke="#334155" stroke-width="1"/>
+
+  <!-- Chart Title -->
+  <text x="450" y="232" text-anchor="middle" fill="#e2e8f0" font-size="16" font-weight="600">Factor (F%) Evolution by Curve Type</text>
+
+  <!-- Chart Area -->
+  <!-- Y axis -->
+  <line x1="130" y1="260" x2="130" y2="470" stroke="#475569" stroke-width="1"/>
+  <!-- X axis -->
+  <line x1="130" y1="470" x2="770" y2="470" stroke="#475569" stroke-width="1"/>
+
+  <!-- Y axis labels -->
+  <text x="120" y="470" text-anchor="end" fill="#64748b" font-size="11">80%</text>
+  <text x="120" y="417" text-anchor="end" fill="#64748b" font-size="11">90%</text>
+  <text x="120" y="365" text-anchor="end" fill="#64748b" font-size="11">100%</text>
+  <text x="120" y="312" text-anchor="end" fill="#64748b" font-size="11">110%</text>
+  <text x="120" y="260" text-anchor="end" fill="#64748b" font-size="11">120%</text>
+
+  <!-- Y axis label -->
+  <text x="50" y="365" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500" transform="rotate(-90, 50, 365)">Factor (F%)</text>
+
+  <!-- X axis labels -->
+  <text x="130" y="490" text-anchor="middle" fill="#64748b" font-size="11">0%</text>
+  <text x="290" y="490" text-anchor="middle" fill="#64748b" font-size="11">25%</text>
+  <text x="450" y="490" text-anchor="middle" fill="#64748b" font-size="11">50%</text>
+  <text x="610" y="490" text-anchor="middle" fill="#64748b" font-size="11">75%</text>
+  <text x="770" y="490" text-anchor="middle" fill="#64748b" font-size="11">100%</text>
+
+  <!-- X axis label -->
+  <text x="450" y="512" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500">Withdrawn / Total Supply</text>
+
+  <!-- Grid lines (horizontal) -->
+  <line x1="130" y1="417" x2="770" y2="417" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="130" y1="365" x2="770" y2="365" stroke="#334155" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="130" y1="312" x2="770" y2="312" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="130" y1="260" x2="770" y2="260" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Grid lines (vertical) -->
+  <line x1="290" y1="260" x2="290" y2="470" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="450" y1="260" x2="450" y2="470" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="610" y1="260" x2="610" y2="470" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Break-even line at 100% -->
+  <line x1="130" y1="365" x2="770" y2="365" stroke="#ef4444" stroke-width="1" stroke-dasharray="8,4" opacity="0.5"/>
+  <text x="785" y="369" fill="#ef4444" font-size="10" opacity="0.7">break-even</text>
+
+  <!-- Loss zone -->
+  <rect x="130" y="365" width="640" height="105" fill="#ef4444" opacity="0.04"/>
+  <text x="160" y="455" fill="#ef4444" font-size="10" opacity="0.5">LOSS ZONE</text>
+
+  <!-- Profit zone -->
+  <rect x="130" y="260" width="640" height="105" fill="#22c55e" opacity="0.04"/>
+  <text x="160" y="278" fill="#22c55e" font-size="10" opacity="0.5">PROFIT ZONE</text>
+
+  <!-- LINEAR curve: factor = 80 + (120-80) * (x/100) = 80 + 40x/100 -->
+  <!-- Points: (0,80%), (25,90%), (50,100%), (75,110%), (100,120%) -->
+  <!-- Y mapping: 80%=470, 90%=417, 100%=365, 110%=312, 120%=260 -->
+  <!-- X mapping: 0%=130, 25%=290, 50%=450, 75%=610, 100%=770 -->
+  <polyline points="130,470 210,448 290,417 370,391 450,365 530,338 610,312 690,286 770,260"
+    fill="none" stroke="url(#linear-line)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- EXPONENTIAL curve: factor = 80 + 40 * (x/100)^2 -->
+  <!-- x=0: 80% (470), x=25: 82.5% (464), x=50: 90% (417), x=75: 102.5% (339), x=100: 120% (260) -->
+  <polyline points="130,470 210,466 290,454 370,432 450,417 530,388 610,339 690,298 770,260"
+    fill="none" stroke="url(#exp-line)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- Right-side curve labels -->
+  <!-- Linear ends at (770,260), label just right of chart at the ~87% position where curves are separated -->
+  <circle cx="770" cy="260" r="4" fill="#3b82f6" opacity="0.9"/>
+  <line x1="774" y1="260" x2="790" y2="270" stroke="#475569" stroke-width="1"/>
+  <text x="795" y="275" fill="#60a5fa" font-size="11" font-weight="600">Discount Factor (Linear)</text>
+
+  <!-- Exponential ends at (770,260) too, so label at ~75% mark where they diverge -->
+  <circle cx="690" cy="298" r="4" fill="#a855f7" opacity="0.9"/>
+  <line x1="694" y1="302" x2="790" y2="320" stroke="#475569" stroke-width="1"/>
+  <text x="795" y="325" fill="#c084fc" font-size="11" font-weight="600">Discount Factor (Exp)</text>
+
+  <!-- Annotation: early exit -->
+  <circle cx="210" cy="448" r="4" fill="#3b82f6" opacity="0.8"/>
+  <line x1="210" y1="440" x2="240" y2="420" stroke="#475569" stroke-width="1"/>
+  <text x="245" y="418" fill="#94a3b8" font-size="10">Early exit: ~85% (loss)</text>
+
+</svg>
