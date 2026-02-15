@@ -50,7 +50,7 @@ export default function CreateProject() {
     return (
       <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
         <header className="flex items-center justify-between p-6 max-w-7xl mx-auto">
-          <Link href="/" className="text-2xl font-bold">ETH Boulder Vault</Link>
+          <Link href="/" className="text-2xl font-bold">Nexus</Link>
           <DynamicWidget />
         </header>
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
@@ -64,7 +64,7 @@ export default function CreateProject() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <header className="flex items-center justify-between p-6 max-w-7xl mx-auto">
-        <Link href="/" className="text-2xl font-bold">ETH Boulder Vault</Link>
+        <Link href="/" className="text-2xl font-bold">Nexus</Link>
         <DynamicWidget />
       </header>
 

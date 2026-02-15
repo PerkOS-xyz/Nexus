@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ETH Boulder Vault",
-  description: "Earn yield on your tokens with configurable vaults",
+  title: "Nexus",
+  description: "AI-powered vault deployment for token launches",
 };
 
 export default function RootLayout({

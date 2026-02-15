@@ -12,7 +12,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
       <header className="flex items-center justify-between p-6 max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold">ETH Boulder Vault</h1>
+        <h1 className="text-2xl font-bold">Nexus</h1>
         <DynamicWidget />
       </header>
 
