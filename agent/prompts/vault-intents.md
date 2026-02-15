@@ -1,6 +1,8 @@
 # Vault Voice Command Patterns
 
-Patrones de comandos de voz para interactuar con Nexus vaults.
+Voice command patterns for interacting with Nexus vaults.
+
+**Note:** Always respond in English unless the user explicitly writes in another language.
 
 ## Create Vault Intent
 
