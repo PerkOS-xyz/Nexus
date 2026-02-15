@@ -274,6 +274,8 @@ Where:
 - **supply** = Circulating token supply (decreases with burns)
 - **F%** = Discount factor (0.8 → 1.0 → 1.2+)
 
+![Payout Simulation](docs/images/payout-simulation.svg)
+
 ### Factor Evolution
 
 The discount factor starts at the configured initial value (e.g., 80%) and evolves based on withdrawals:

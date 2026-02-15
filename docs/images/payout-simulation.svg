@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="470" rx="16" fill="url(#bg2)"/>
+  <rect width="960" height="470" rx="16" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="420" y="30" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="700">Payout Simulation by Discount Factor (F%)</text>
+  <text x="420" y="50" text-anchor="middle" fill="#64748b" font-size="11">TVL / Supply = $1.00 per token (nominal value)</text>
+
+  <!-- Chart area: x=90..730, y=65..390 -->
+  <!-- Y range: $0...$1200, X range: 0...1000 tokens -->
+
+  <!-- Axes -->
+  <line x1="90" y1="65" x2="90" y2="390" stroke="#475569" stroke-width="1"/>
+  <line x1="90" y1="390" x2="730" y2="390" stroke="#475569" stroke-width="1"/>
+
+  <!-- Y axis labels -->
+  <text x="80" y="394" text-anchor="end" fill="#64748b" font-size="11">$0</text>
+  <text x="80" y="336" text-anchor="end" fill="#64748b" font-size="11">$200</text>
+  <text x="80" y="282" text-anchor="end" fill="#64748b" font-size="11">$400</text>
+  <text x="80" y="228" text-anchor="end" fill="#64748b" font-size="11">$600</text>
+  <text x="80" y="173" text-anchor="end" fill="#64748b" font-size="11">$800</text>
+  <text x="80" y="119" text-anchor="end" fill="#64748b" font-size="11">$1,000</text>
+  <text x="80" y="69" text-anchor="end" fill="#64748b" font-size="11">$1,200</text>
+
+  <!-- Y axis title -->
+  <text x="30" y="228" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500" transform="rotate(-90, 30, 228)">Payout (USDC)</text>
+
+  <!-- X axis labels -->
+  <text x="90" y="410" text-anchor="middle" fill="#64748b" font-size="11">0</text>
+  <text x="218" y="410" text-anchor="middle" fill="#64748b" font-size="11">200</text>
+  <text x="346" y="410" text-anchor="middle" fill="#64748b" font-size="11">400</text>
+  <text x="474" y="410" text-anchor="middle" fill="#64748b" font-size="11">600</text>
+  <text x="602" y="410" text-anchor="middle" fill="#64748b" font-size="11">800</text>
+  <text x="730" y="410" text-anchor="middle" fill="#64748b" font-size="11">1,000</text>
+
+  <!-- X axis title -->
+  <text x="410" y="435" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="500">Tokens Burned</text>
+
+  <!-- Horizontal grid -->
+  <line x1="90" y1="336" x2="730" y2="336" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="90" y1="282" x2="730" y2="282" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="90" y1="228" x2="730" y2="228" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="90" y1="173" x2="730" y2="173" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="90" y1="119" x2="730" y2="119" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Vertical grid -->
+  <line x1="218" y1="65" x2="218" y2="390" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="346" y1="65" x2="346" y2="390" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="474" y1="65" x2="474" y2="390" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="602" y1="65" x2="602" y2="390" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Shaded zones -->
+  <!-- Loss zone: between F=80% and F=100% -->
+  <polygon points="90,390 730,173 730,119" fill="#ef4444" opacity="0.05"/>
+  <!-- Profit zone: between F=100% and F=120% -->
+  <polygon points="90,390 730,119 730,65" fill="#22c55e" opacity="0.05"/>
+
+  <!-- Zone labels -->
+  <text x="640" y="160" fill="#ef4444" font-size="10" opacity="0.5" font-weight="600">LOSS</text>
+  <text x="640" y="100" fill="#22c55e" font-size="10" opacity="0.5" font-weight="600">PROFIT</text>
+
+  <!-- F=80% line: payout = tokens × 0.80 → 1000 tokens = $800 → y=173 -->
+  <line x1="90" y1="390" x2="730" y2="173" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" filter="url(#glow2)"/>
+
+  <!-- F=90% line: payout = tokens × 0.90 → 1000 tokens = $900 → y=146 -->
+  <line x1="90" y1="390" x2="730" y2="146" stroke="#fb923c" stroke-width="2.5" stroke-linecap="round" filter="url(#glow2)"/>
+
+  <!-- F=100% break-even line: payout = tokens × 1.00 → 1000 tokens = $1000 → y=119 -->
+  <line x1="90" y1="390" x2="730" y2="119" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8,4" opacity="0.8"/>
+
+  <!-- F=110% line: payout = tokens × 1.10 → 1000 tokens = $1100 → y=92 -->
+  <line x1="90" y1="390" x2="730" y2="92" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" filter="url(#glow2)"/>
+
+  <!-- F=120% line: payout = tokens × 1.20 → 1000 tokens = $1200 → y=65 -->
+  <line x1="90" y1="390" x2="730" y2="65" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" filter="url(#glow2)"/>
+
+  <!-- Endpoint dots -->
+  <circle cx="730" cy="173" r="3.5" fill="#ef4444"/>
+  <circle cx="730" cy="146" r="3.5" fill="#fb923c"/>
+  <circle cx="730" cy="119" r="3.5" fill="#94a3b8"/>
+  <circle cx="730" cy="92" r="3.5" fill="#34d399"/>
+  <circle cx="730" cy="65" r="3.5" fill="#22c55e"/>
+
+  <!-- Right-side labels (payout for 1000 tokens) -->
+  <text x="745" y="177" fill="#ef4444" font-size="11" font-weight="600">F = 80%  →  $800</text>
+  <text x="745" y="150" fill="#fb923c" font-size="11" font-weight="600">F = 90%  →  $900</text>
+  <text x="745" y="123" fill="#94a3b8" font-size="11" font-weight="600">F = 100%  →  $1,000</text>
+  <text x="745" y="96" fill="#34d399" font-size="11" font-weight="600">F = 110%  →  $1,100</text>
+  <text x="745" y="69" fill="#22c55e" font-size="11" font-weight="600">F = 120%  →  $1,200</text>
+
+  <!-- Example annotation at 600 tokens -->
+  <line x1="474" y1="390" x2="474" y2="195" stroke="#475569" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+  <circle cx="474" cy="260" r="4" fill="#ef4444" opacity="0.8"/>
+  <circle cx="474" cy="195" r="4" fill="#22c55e" opacity="0.8"/>
+  <line x1="478" y1="260" x2="500" y2="270" stroke="#475569" stroke-width="1"/>
+  <text x="505" y="274" fill="#94a3b8" font-size="10">600 × 80% = $480</text>
+  <line x1="478" y1="195" x2="500" y2="185" stroke="#475569" stroke-width="1"/>
+  <text x="505" y="183" fill="#94a3b8" font-size="10">600 × 120% = $720</text>
+
+  <!-- Formula reminder -->
+  <text x="420" y="458" text-anchor="middle" fill="#475569" font-size="11" font-style="italic">payout = (TVL / Supply) × Tokens × F%</text>
+</svg>
