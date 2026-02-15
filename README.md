@@ -4,6 +4,8 @@ A decentralized vault system for token launches with yield-backed exits, powered
 
 Built for **ETH Boulder 2026** 🏔️
 
+🔗 **Live Demo:** https://nexus-ethboulder.netlify.app
+
 ---
 
 ## Overview
@@ -25,19 +27,19 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    FRONTEND (Next.js App Router)                     │
-│              Tailwind CSS + shadcn/ui + RainbowKit                   │
+│                     NEXUS FRONTEND (NexusApp)                        │
+│              Next.js 16 + Tailwind + shadcn/ui + Dynamic             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • User connects wallet (RainbowKit)                                │
-│  • Chat interface to describe token launch                          │
-│  • Pays $1 USDC via x402 protocol                                   │
+│  • User connects wallet (Dynamic)                                   │
+│  • Create Project: Deploy vaults via form                           │
+│  • Add Liquidity: Deposit/withdraw from vault cards                 │
 │  • Views deployed vault + token addresses                           │
 └────────────────────────────┬────────────────────────────────────────┘
                              │ WebSocket / API
                              ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      OPENCLAW AGENT                                  │
-│                    (Clawdbot Backend)                                │
+│                       NEXUS AGENT                                    │
+│                    (OpenClaw Backend)                                │
 ├─────────────────────────────────────────────────────────────────────┤
 │  • Processes chat messages                                          │
 │  • Extracts vault parameters from conversation                      │
@@ -64,13 +66,13 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 ## User Flow
 
 ```
-1. Connect Wallet     →  User connects via RainbowKit
-2. Chat with Agent    →  "I want to launch a token for my DeFi project..."
-3. Agent Configures   →  Extracts: cap, supply, unlock, fees, etc.
-4. Pay Launch Fee     →  $1 USDC via x402 (covers service + gas)
-5. Agent Deploys      →  Calls VaultFactory.createVault()
-6. Receive Addresses  →  Vault + Token addresses returned
-7. Share Link         →  User shares with investors to deposit
+1. Connect Wallet     →  User connects via Dynamic
+2. Create Project     →  Fill form: token name, symbol, cap, APY, duration
+3. Deploy Vault       →  Pay $1 USDC via x402 → Agent deploys vault
+4. Receive Addresses  →  Vault + Token addresses returned
+5. Add Liquidity      →  Users deposit tokens, receive vault tokens
+6. Earn Yield         →  Vault factor increases over time
+7. Withdraw           →  Burn vault tokens, receive principal + yield
 ```
 
 ---
