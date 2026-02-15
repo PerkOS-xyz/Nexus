@@ -1,22 +1,25 @@
 # 🏦 Nexus - Token Vault Launcher
 
-A decentralized vault system for token launches with yield-backed exits, powered by AI agents.
+AI-powered sovereign token launches with yield-backed floors.
 
-Built for **ETH Boulder 2026** 🏔️
+**Built for ETH Boulder 2026** 🏔️
 
-🔗 **Live Demo:** https://nexus-ethboulder.netlify.app
+🔗 **Live Demo:** https://nexus.perkos.xyz
+📱 **Telegram:** @NexusPerkOS_Bot
+🐙 **GitHub:** https://github.com/PerkOS-xyz/Nexus
 
 ---
 
 ## Overview
 
-Nexus enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with yield-backed exits. 
+Nexus enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with yield-backed exits.
 
 **How it works:**
-1. Users **login with their wallet** (Dynamic)
-2. Users **chat with Nexus** (AI agent) to describe their token launch
-3. Users **pay $1 USDC** via x402 protocol (stack.perkos.xyz facilitator)
-4. Nexus **deploys the vault** on their behalf
+1. **Chat** with Nexus AI Agent to describe your token launch
+2. **Pay** $1 USDC via x402 protocol
+3. **Deploy** — the agent creates your vault on Base
+4. **Earn** — deposits route to Yearn V3 for yield
+5. **Exit** — users burn tokens to claim USDC + yield
 
 Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
 
@@ -32,6 +35,139 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 - **Linear or exponential exit curves**
 
 ![Key Features](docs/images/key-features.svg)
+
+---
+
+## Chat Examples
+
+Here are examples of how to interact with the Nexus AI Agent:
+
+### 🚀 Creating a Vault
+
+**You:** "I want to create a token called Solar DAO with symbol SOLAR, raising 50,000 USDC with a 30-day lock period"
+
+**Nexus:**
+```
+Great! Here's your vault configuration:
+
+📋 Token: Solar DAO (SOLAR)
+💰 Funding Cap: 50,000 USDC
+⏱️ Lock Period: 30 days
+📈 Initial Factor: 80%
+
+Service fee: $1 USDC
+
+Ready to deploy? Please confirm the payment to proceed.
+```
+
+---
+
+### 📊 Checking Vault Status
+
+**You:** "What's the status of my vault?"
+
+**Nexus:**
+```
+📊 Vault Status: Solar DAO (SOLAR)
+
+💰 TVL: 25,000 USDC
+📈 Current Factor: 85%
+🪙 Circulating Supply: 250,000 SOLAR
+💵 Yield Earned: 312.50 USDC
+🔒 Status: Locked (unlocks in 18 days)
+
+Your holdings: 10,000 SOLAR (~$850 current value)
+```
+
+---
+
+### 💸 Previewing a Withdrawal
+
+**You:** "How much would I get if I withdraw 5,000 tokens?"
+
+**Nexus:**
+```
+📋 Withdrawal Preview
+
+🪙 Tokens to burn: 5,000 SOLAR
+📈 Current Factor: 95%
+💵 Estimated Payout: 527.50 USDC
+
+⚠️ Note: The vault is still locked. Withdrawals
+will be available on March 15, 2026.
+```
+
+---
+
+### 💰 Making a Deposit
+
+**You:** "I want to deposit 1,000 USDC into the Solar DAO vault"
+
+**Nexus:**
+```
+💰 Deposit Preview
+
+📥 Amount: 1,000 USDC
+🪙 Tokens to receive: 10,000 SOLAR
+📍 Vault: 0x7d94...2329
+
+Click here to complete your deposit →
+[Deposit 1,000 USDC]
+```
+
+---
+
+### 🔓 Withdrawing Funds
+
+**You:** "I want to withdraw all my tokens"
+
+**Nexus:**
+```
+🔓 Withdrawal Ready
+
+🪙 Your balance: 10,000 SOLAR
+📈 Current Factor: 102%
+💵 Estimated Payout: 1,071.00 USDC
+📊 Profit: +71 USDC (+7.1%)
+
+Click here to complete your withdrawal →
+[Withdraw All]
+```
+
+---
+
+### ❓ Asking Questions
+
+**You:** "How does the yield work?"
+
+**Nexus:**
+```
+Great question! Here's how yield works in Nexus:
+
+1. When you deposit USDC, 100% goes to Yearn V3 vaults
+2. Yearn generates yield through DeFi strategies
+3. The yield increases the vault's TVL
+4. As TVL grows, your exit value improves
+
+Example: If the vault earns 10% APY and you hold
+for a year, your tokens will be worth ~10% more
+when you withdraw (assuming constant supply).
+
+The Dynamic Factor (F%) also improves over time,
+starting at 80% and increasing to 100%+ as the
+vault matures.
+```
+
+---
+
+### 🎤 Voice Commands (OmiMesh)
+
+You can also use voice commands:
+
+- *"Hey Nexus, check my vault status"*
+- *"What's my current balance?"*
+- *"How much yield has my vault earned?"*
+- *"Preview a withdrawal of 1000 tokens"*
 
 ---
 
@@ -92,7 +228,7 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 |-----------|------------|-------------|
 | **NexusApp** | Next.js 16 + Dynamic | Frontend with chat UI |
 | **Nexus Plugin** | WebSocket/API | Connects frontend ↔ agent |
-| **Nexus Agent** | OpenClaw/Clawdbot | AI agent that deploys vaults |
+| **Nexus Agent** | OpenClaw (Clawdbot) | AI agent with vault skills |
 | **x402 Payment** | stack.perkos.xyz | $1 USDC service fee |
 | **Firebase** | Firestore | Stores user → deployments |
 | **Contracts** | Base Mainnet | VaultFactory + Vault + Token |
@@ -125,40 +261,48 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 
 ---
 
+## Vault Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Agent
+    participant VaultFactory
+    participant Vault
+    participant Yearn
+
+    User->>Frontend: Describe token launch
+    Frontend->>Agent: Send chat message
+    Agent->>Agent: Extract parameters (NLP)
+    Agent->>User: Confirm & request $1 fee
+    User->>Agent: Pay via x402
+    Agent->>VaultFactory: createVault()
+    VaultFactory->>Vault: Deploy new Vault
+    VaultFactory->>Agent: Return addresses
+    Agent->>Frontend: Vault + Token addresses
+
+    Note over User,Yearn: Deposit Phase
+    User->>Vault: deposit(USDC)
+    Vault->>Yearn: Route to ERC-4626
+    Vault->>User: Mint tokens
+
+    Note over User,Yearn: Exit Phase
+    User->>Vault: withdraw(tokens)
+    Vault->>Yearn: Redeem shares
+    Vault->>User: Return USDC + yield
+```
+
+---
+
 ## Nexus Plugin
 
 The Nexus Plugin connects the NexusApp frontend to the Nexus Agent.
 
 ### Responsibilities
 
-- Authenticate users via wallet signature
-- Send chat messages to Nexus Agent
-- Receive responses and x402 payment requests
-- Handle payment flow and confirmations
-- Stream agent responses to chat UI
-
-### Integration
-
-```
-NexusApp (Frontend)
-    │
-    ├── /chat page
-    │   └── ChatInterface component
-    │       └── useNexusPlugin() hook
-    │           │
-    │           ▼
-    └── Nexus Plugin (WebSocket/API)
-            │
-            ▼
-        Nexus Agent (OpenClaw)
-```
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
+| Component | Role |
+|-----------|------|
 | **Frontend** | Next.js 16 (App Router) + TypeScript |
 | **Styling** | Tailwind CSS + shadcn/ui |
 | **Wallet** | Dynamic + wagmi + viem |
@@ -177,15 +321,12 @@ NexusApp (Frontend)
 |-----|--------|-------------|
 | **Launch Fee** | $1 USDC | Paid via x402 to deploy vault |
 | **Platform Fee** | 1% of yield | Ongoing, from generated yield |
-| **Gas** | Absorbed | Agent pays gas costs |
+| **Project Fee** | Configurable | Your share of yield |
+| **Gas** | Absorbed | Agent pays deployment gas |
 
 ---
 
-## Firebase Data Model
-
-Firebase Firestore stores the relationship between user wallets and their deployed contracts.
-
-### Collections
+## Firebase Schema
 
 **`users/{walletAddress}`**
 ```json
@@ -284,12 +425,28 @@ The discount factor starts at the configured initial value (e.g., 80%) and evolv
 - **1.0 (100%)** → Break-even point
 - **1.2 (120%)** → Seller receives 120% of nominal value (+20% profit)
 
+### Example
+
+```
+Initial:
+  TVL: 100,000 USDC
+  Supply: 100,000 tokens
+  F%: 80%
+  → 1 token = 0.80 USDC
+
+After 1 year (10% yield):
+  TVL: 110,000 USDC
+  Supply: 90,000 tokens (10k burned)
+  F%: 100%
+  → 1 token = 1.22 USDC
+```
+
 ### Curve Types
 
 ```
 LINEAR CURVE:
   factor = initialFactor + (maxFactor - initialFactor) × (withdrawn / totalSupply)
-  
+
 EXPONENTIAL CURVE:
   factor = initialFactor + (maxFactor - initialFactor) × (withdrawn / totalSupply)²
 ```
@@ -346,6 +503,16 @@ function getCurrentFactor() external view returns (uint256);
 
 ---
 
+## Smart Contracts (Base Mainnet)
+
+| Contract | Address |
+|----------|---------|
+| **VaultFactory** | `0x9Df66106201d04CF8398d6387C2D022eb9353c73` |
+| **USDC** | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| **Yearn USDC Vault** | `0xb13cf163d916917d9cd6e836905ca5f12a1def4b` |
+
+---
+
 ## Critical Implementation Notes
 
 ### ⚠️ Rounding Rules
@@ -383,6 +550,57 @@ Case C: F = 1.20 (120%)
 
 ---
 
+## Nexus Agent
+
+The Nexus Agent is an AI-powered assistant that helps users deploy Token Vaults via natural language.
+
+### Features
+
+- **Conversational deployment** — Users describe their token in chat
+- **Parameter extraction** — Agent extracts vault config from conversation
+- **x402 payments** — Handles $1 USDC service fee
+- **Vault management** — Read state, preview withdrawals
+
+### Agent Skill
+
+The `nexus-vault` skill enables the AI agent to:
+
+1. **Deploy Vaults** — `vault-deploy.mjs`
+2. **Read Vault State** — `vault-read.mjs`
+3. **Preview Withdrawals** — `vault-preview.mjs`
+
+| Script | Description |
+|--------|-------------|
+| `vault-read.mjs` | Read vault TVL, factor, yield |
+| `vault-preview.mjs` | Preview withdrawal payout |
+| `vault-create.mjs` | Generate pre-configured create links |
+
+### Deploy Script
+
+```bash
+cd agent/scripts
+node vault-deploy.mjs \
+  --name "My Token" \
+  --symbol "MTK" \
+  --cap 10000 \
+  --user 0x...
+```
+
+### Deployment
+
+The Nexus Agent runs on OpenClaw (Clawdbot) and connects to the frontend via the Nexus Plugin.
+
+```
+NexusApp (Chat UI) ←→ Nexus Plugin ←→ Nexus Agent (OpenClaw)
+                                            │
+                    ┌───────────────────────┼───────────────────────┐
+                    ▼                       ▼                       ▼
+              x402 Payment            Firebase              Smart Contracts
+           (stack.perkos.xyz)        (Firestore)               (Base)
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -399,6 +617,7 @@ Nexus/
 │   ├── app/                # Routes
 │   │   ├── layout.tsx      # Root layout + DynamicProvider
 │   │   ├── page.tsx        # Landing page
+│   │   ├── chat/           # AI chat interface
 │   │   ├── create/         # /create - Deploy vault form
 │   │   └── liquidity/      # /liquidity - Vault cards + deposit/withdraw
 │   ├── components/ui/      # shadcn/ui components
@@ -419,82 +638,19 @@ Nexus/
 
 ---
 
-## Nexus Agent
-
-The Nexus Agent is an AI-powered assistant that helps users deploy Token Vaults via natural language.
-
-### Features
-
-- **Conversational deployment** — Users describe their token in chat
-- **Parameter extraction** — Agent extracts vault config from conversation
-- **x402 payments** — Handles $1 USDC service fee
-- **Vault management** — Read state, preview withdrawals
-
-### Agent Skill
-
-The agent uses the `nexus-vault` skill located in `/agent`:
-
-| Script | Description |
-|--------|-------------|
-| `vault-read.mjs` | Read vault TVL, factor, yield |
-| `vault-preview.mjs` | Preview withdrawal payout |
-| `vault-create.mjs` | Generate pre-configured create links |
-
-### Deployment
-
-The Nexus Agent runs on OpenClaw (Clawdbot) and connects to the frontend via the Nexus Plugin.
-
-```
-NexusApp (Chat UI) ←→ Nexus Plugin ←→ Nexus Agent (OpenClaw)
-                                            │
-                    ┌───────────────────────┼───────────────────────┐
-                    ▼                       ▼                       ▼
-              x402 Payment            Firebase              Smart Contracts
-           (stack.perkos.xyz)        (Firestore)               (Base)
-```
-
-### Environment Variables
-
-Create `.env` for the agent (never commit to repo):
-
-```bash
-NEXUS_RPC_URL=https://mainnet.base.org
-NEXUS_APP_URL=https://nexus-ethboulder.netlify.app
-NEXUS_FIREBASE_PROJECT=<your-firebase-project>
-NEXUS_FIREBASE_SA_PATH=<path-to-service-account.json>
-# API keys stored separately via: openclaw configure --section models
-```
-
----
-
 ## Tech Stack
 
-- **Contracts:** Solidity 0.8.20+, Foundry, OpenZeppelin, Solady
-- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind, shadcn/ui, wagmi, viem
-- **Wallet:** Dynamic
-- **Agent:** Nexus (OpenClaw/Clawdbot)
-- **Chain:** Base (L2)
-- **Yield:** Yearn Finance V3 (direct ERC-4626 integration)
-
----
-
-## Quick Start
-
-```bash
-# Clone
-git clone https://github.com/PerkOS-xyz/ethboulder-2026
-cd ethboulder-2026
-
-# Install dependencies
-cd contracts
-forge install
-
-# Run tests
-forge test
-
-# Deploy to Base mainnet
-forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
-```
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 16 + TypeScript + Tailwind |
+| **UI** | shadcn/ui components |
+| **Wallet** | Dynamic + wagmi + viem |
+| **AI Agent** | OpenClaw (Clawdbot) |
+| **Payments** | x402 protocol (stack.perkos.xyz) |
+| **Database** | Firebase Firestore |
+| **Contracts** | Solidity 0.8.20 + Foundry |
+| **Chain** | Base (L2) |
+| **Yield** | Yearn Finance V3 (ERC-4626) |
 
 ---
 
@@ -559,6 +715,77 @@ When user deposits 10 USDC → receives 100 tokens
 
 ---
 
+## Quick Start
+
+```bash
+# Clone
+git clone https://github.com/PerkOS-xyz/Nexus
+cd Nexus
+
+# Install dependencies
+cd contracts
+forge install
+
+# Run tests
+forge test
+
+# Deploy to Base mainnet
+forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
+```
+
+---
+
+## Local Development
+
+### Frontend
+```bash
+cd NexusApp
+npm install
+npm run dev
+```
+
+### Contracts
+```bash
+cd contracts
+forge build
+forge test
+```
+
+### Deploy Contract
+```bash
+source .env
+forge script script/Deploy.s.sol --rpc-url $BASE_RPC_URL --broadcast
+```
+
+---
+
+## Environment Variables
+
+### Frontend (Netlify)
+```
+NEXUS_AGENT_URL=https://agent.nexus.perkos.xyz
+NEXUS_AGENT_TOKEN=<gateway-token>
+NEXT_PUBLIC_DYNAMIC_ENV_ID=<dynamic-id>
+```
+
+### Agent (VPS)
+```
+PRIVATE_KEY=0x...
+BASE_RPC_URL=https://mainnet.base.org
+VAULT_FACTORY=0x9Df66106201d04CF8398d6387C2D022eb9353c73
+USDC=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+```
+
+### Contracts
+```bash
+# contracts/.env
+PRIVATE_KEY=0x...
+BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
+BASESCAN_API_KEY=...
+```
+
+---
+
 ## Deployment
 
 ### Prerequisites
@@ -586,23 +813,40 @@ forge script script/Deploy.s.sol:CreateVault --rpc-url base --broadcast
 
 ---
 
-## Environment Variables
+## Risks & Disclaimers
 
-```bash
-# contracts/.env
-PRIVATE_KEY=0x...
-BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
-BASESCAN_API_KEY=...
+⚠️ **Experimental Software** — This platform is provided "AS IS" without warranties.
 
-# NexusApp/.env.local
-NEXT_PUBLIC_DYNAMIC_ENV_ID=your_dynamic_environment_id
-NEXT_PUBLIC_CHAIN_ID=84532
-NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
-NEXT_PUBLIC_VAULT_FACTORY_ADDRESS=0x...
-```
+- **Third-Party Risk** — Funds are deposited into Yearn/external protocols
+- **Smart Contract Risk** — Contracts may contain vulnerabilities
+- **Yield Risk** — APY is not guaranteed; principal loss possible
+- **Irreversible** — Blockchain transactions cannot be undone
+
+See the [full disclaimer](https://nexus.perkos.xyz) in the app footer.
 
 ---
 
 ## License
 
-MIT License — Built for ETH Boulder 2026 🏔️
+Business Source License 1.1 (BSL)
+
+Free for use up to $5,000,000 TVL. Commercial license required beyond that limit.
+
+---
+
+## Team
+
+Built by **PerkOS** at ETH Boulder 2026.
+
+- 🐦 [@PerkOS_xyz](https://twitter.com/PerkOS_xyz)
+- 🐙 [github.com/PerkOS-xyz](https://github.com/PerkOS-xyz)
+
+---
+
+## Acknowledgments
+
+- **ETH Boulder 2026** — Hackathon home
+- **Yearn Finance** — Yield infrastructure
+- **Base** — L2 deployment
+- **Dynamic** — Wallet connection
+- **OpenClaw** — AI agent framework

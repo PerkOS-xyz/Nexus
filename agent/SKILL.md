@@ -1,16 +1,20 @@
 ---
 name: nexus-vault
-description: Skill para deployment y gestión de Token Vaults en Nexus. Usar cuando el agente necesite: (1) recibir mensajes del chat frontend, (2) extraer parámetros de vault de conversaciones, (3) generar pagos x402, (4) deployar vaults via VaultFactory, (5) guardar deployments en Firebase, (6) responder al usuario con direcciones de contratos, (7) leer estado de vaults existentes.
+description: Skill for deploying and managing Token Vaults on Nexus. Use when the agent needs to: (1) receive messages from frontend chat, (2) extract vault parameters from conversations, (3) generate x402 payments, (4) deploy vaults via VaultFactory, (5) save deployments to Firebase, (6) respond to users with contract addresses, (7) read existing vault state.
 ---
 
 # Nexus Vault Skill
 
-Skill para el agente Nexus que maneja el deployment y gestión de Token Vaults con yield-backed exits.
+Skill for the Nexus agent handling Token Vault deployment and management with yield-backed exits.
 
-## Arquitectura
+## Language
+
+**Always respond in English** unless the user explicitly writes in another language.
+
+## Architecture
 
 ```
-Frontend (NexusApp) ←→ Nexus Plugin ←→ Nexus Agent (este skill)
+Frontend (NexusApp) ←→ Nexus Plugin ←→ Nexus Agent (this skill)
                                             │
                     ┌───────────────────────┼───────────────────────┐
                     ▼                       ▼                       ▼
@@ -18,31 +22,31 @@ Frontend (NexusApp) ←→ Nexus Plugin ←→ Nexus Agent (este skill)
            (stack.perkos.xyz)        (Firestore)               (Base)
 ```
 
-## Flujo de Deployment
+## Deployment Flow
 
-1. **Recibir mensaje** del frontend via plugin
-2. **Extraer parámetros** del vault (nombre, cap, APY, duración)
-3. **Generar pago x402** ($1 USDC via stack.perkos.xyz)
-4. **Verificar pago** con el facilitator
-5. **Deployar vault** via VaultFactory.createVault()
-6. **Guardar en Firebase** (wallet → deployment)
-7. **Responder** con vault + token addresses
+1. **Receive message** from frontend via plugin
+2. **Extract parameters** for vault (name, cap, APY, duration)
+3. **Generate x402 payment** ($1 USDC via stack.perkos.xyz)
+4. **Verify payment** with facilitator
+5. **Deploy vault** via VaultFactory.createVault()
+6. **Save to Firebase** (wallet → deployment)
+7. **Respond** with vault + token addresses
 
-## Scripts Disponibles
+## Available Scripts
 
-### Leer Estado del Vault
+### Read Vault State
 ```bash
 node scripts/vault-read.mjs --vault 0x...
 ```
-Retorna: TVL, factor actual, supply, yield acumulado.
+Returns: TVL, current factor, supply, accumulated yield.
 
 ### Preview Withdrawal
 ```bash
 node scripts/vault-preview.mjs --vault 0x... --amount 1000
 ```
-Retorna: payout estimado basado en factor actual.
+Returns: estimated payout based on current factor.
 
-### Crear Link de Vault
+### Create Vault Link
 ```bash
 node scripts/vault-create.mjs \
   --name "My Token" \
@@ -50,9 +54,9 @@ node scripts/vault-create.mjs \
   --cap 100000 \
   --duration 30
 ```
-Retorna: link con parámetros pre-configurados.
+Returns: link with pre-configured parameters.
 
-## Contratos (Base Mainnet)
+## Contracts (Base Mainnet)
 
 | Contract | Address |
 |----------|---------|
@@ -60,24 +64,24 @@ Retorna: link con parámetros pre-configurados.
 | **Yearn USDC Vault** | ERC-4626 compatible |
 | **USDC** | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 
-## Parámetros de Vault
+## Vault Parameters
 
-| Parámetro | Tipo | Descripción |
+| Parameter | Type | Description |
 |-----------|------|-------------|
-| name | string | Nombre del token |
-| symbol | string | Símbolo (3-5 chars) |
-| cap | number | Cap de funding en USDC |
-| maxTokenSupply | number | Supply total de tokens |
-| initialFactorBps | number | Factor inicial (8000 = 80%) |
-| projectFeeBps | number | Fee del proyecto (500 = 5%) |
-| unlockTimestamp | number | Unix timestamp de unlock |
-| curveType | string | "LINEAR" o "EXPONENTIAL" |
+| name | string | Token name |
+| symbol | string | Symbol (3-5 chars) |
+| cap | number | Funding cap in USDC |
+| maxTokenSupply | number | Total token supply |
+| initialFactorBps | number | Initial factor (8000 = 80%) |
+| projectFeeBps | number | Project fee (500 = 5%) |
+| unlockTimestamp | number | Unix timestamp for unlock |
+| curveType | string | "LINEAR" or "EXPONENTIAL" |
 
 ## x402 Payment
 
-- **Fee:** $1 USDC por deployment
+- **Fee:** $1 USDC per deployment
 - **Facilitator:** stack.perkos.xyz
-- Ver `prompts/vault-intents.md` para flujo de pago
+- See `prompts/vault-intents.md` for payment flow
 
 ## Firebase Schema
 
@@ -97,11 +101,11 @@ Retorna: link con parámetros pre-configurados.
 
 ## Voice Commands
 
-Ver `prompts/vault-intents.md` para patrones de comandos de voz.
+See `prompts/vault-intents.md` for voice command patterns.
 
-## Respuestas
+## Response Templates
 
-### Éxito
+### Success
 ```
 ✅ Vault deployed!
 

@@ -27,12 +27,27 @@ export async function POST(request: NextRequest) {
       headers['Authorization'] = `Bearer ${NEXUS_AGENT_TOKEN}`;
     }
 
+    const systemPrompt = `You are Nexus Agent, an AI assistant that helps users deploy token vaults on Base.
+
+IMPORTANT: Always respond in English, regardless of the user's language.
+
+Your capabilities:
+- Help users create token vaults with yield-backed exits
+- Explain how the vault economics work (TVL, factor, yield)
+- Guide users through the deployment process
+- Answer questions about Nexus, Base, and DeFi
+
+Keep responses concise and helpful. Use emojis sparingly for friendliness.`;
+
     const res = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify({
         model: 'openclaw:main',
-        messages: [{ role: 'user', content: message }],
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
       }),
     });
 
