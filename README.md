@@ -390,7 +390,7 @@ Case C: F = 1.20 (120%)
 ## Project Structure
 
 ```
-ethboulder-2026/
+Nexus/
 ├── contracts/              # Smart contracts (Foundry)
 │   ├── src/
 │   │   ├── VaultFactory.sol
@@ -408,8 +408,65 @@ ethboulder-2026/
 │   ├── components/ui/      # shadcn/ui components
 │   ├── providers/          # Dynamic wallet provider
 │   └── lib/                # Utilities
+├── agent/                  # Nexus Agent Skill (OpenClaw)
+│   ├── SKILL.md            # Skill definition
+│   ├── config.json         # Contract addresses & config
+│   ├── scripts/            # Agent scripts
+│   │   ├── vault-read.mjs      # Read vault state
+│   │   ├── vault-preview.mjs   # Preview withdrawal
+│   │   └── vault-create.mjs    # Generate create links
+│   └── prompts/
+│       └── vault-intents.md    # Voice command patterns
 ├── scripts/                # Deployment scripts
 └── docs/                   # Documentation
+```
+
+---
+
+## Nexus Agent
+
+The Nexus Agent is an AI-powered assistant that helps users deploy Token Vaults via natural language.
+
+### Features
+
+- **Conversational deployment** — Users describe their token in chat
+- **Parameter extraction** — Agent extracts vault config from conversation
+- **x402 payments** — Handles $1 USDC service fee
+- **Vault management** — Read state, preview withdrawals
+
+### Agent Skill
+
+The agent uses the `nexus-vault` skill located in `/agent`:
+
+| Script | Description |
+|--------|-------------|
+| `vault-read.mjs` | Read vault TVL, factor, yield |
+| `vault-preview.mjs` | Preview withdrawal payout |
+| `vault-create.mjs` | Generate pre-configured create links |
+
+### Deployment
+
+The Nexus Agent runs on OpenClaw (Clawdbot) and connects to the frontend via the Nexus Plugin.
+
+```
+NexusApp (Chat UI) ←→ Nexus Plugin ←→ Nexus Agent (OpenClaw)
+                                            │
+                    ┌───────────────────────┼───────────────────────┐
+                    ▼                       ▼                       ▼
+              x402 Payment            Firebase              Smart Contracts
+           (stack.perkos.xyz)        (Firestore)               (Base)
+```
+
+### Environment Variables
+
+Create `.env` for the agent (never commit to repo):
+
+```bash
+NEXUS_RPC_URL=https://mainnet.base.org
+NEXUS_APP_URL=https://nexus-ethboulder.netlify.app
+NEXUS_FIREBASE_PROJECT=<your-firebase-project>
+NEXUS_FIREBASE_SA_PATH=<path-to-service-account.json>
+# API keys stored separately via: openclaw configure --section models
 ```
 
 ---
