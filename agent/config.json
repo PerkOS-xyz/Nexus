@@ -1,0 +1,48 @@
+{
+  "name": "nexus-vault",
+  "version": "1.0.0",
+  "description": "Token Vault deployment and management for Nexus",
+  "author": "PerkOS",
+  "repository": "https://github.com/PerkOS-xyz/Nexus",
+  
+  "environment": {
+    "required": [
+      "NEXUS_RPC_URL",
+      "NEXUS_FIREBASE_PROJECT",
+      "NEXUS_FIREBASE_SA_PATH"
+    ],
+    "optional": [
+      "NEXUS_APP_URL",
+      "NEXUS_X402_FACILITATOR"
+    ]
+  },
+  
+  "contracts": {
+    "chain": "base",
+    "chainId": 8453,
+    "vaultFactory": "0x9Df66106201d04CF8398d6387C2D022eb9353c73",
+    "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  },
+  
+  "x402": {
+    "facilitator": "https://stack.perkos.xyz",
+    "fee": {
+      "amount": 1000000,
+      "token": "USDC",
+      "decimals": 6
+    }
+  },
+  
+  "firebase": {
+    "collections": {
+      "users": "users",
+      "deployments": "deployments"
+    }
+  },
+  
+  "scripts": {
+    "vault-read": "scripts/vault-read.mjs",
+    "vault-preview": "scripts/vault-preview.mjs",
+    "vault-create": "scripts/vault-create.mjs"
+  }
+}
