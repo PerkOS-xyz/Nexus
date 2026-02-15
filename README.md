@@ -38,6 +38,139 @@ All deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and th
 
 ---
 
+## Chat Examples
+
+Here are examples of how to interact with the Nexus AI Agent:
+
+### 🚀 Creating a Vault
+
+**You:** "I want to create a token called Solar DAO with symbol SOLAR, raising 50,000 USDC with a 30-day lock period"
+
+**Nexus:** 
+```
+Great! Here's your vault configuration:
+
+📋 Token: Solar DAO (SOLAR)
+💰 Funding Cap: 50,000 USDC
+⏱️ Lock Period: 30 days
+📈 Initial Factor: 80%
+
+Service fee: $1 USDC
+
+Ready to deploy? Please confirm the payment to proceed.
+```
+
+---
+
+### 📊 Checking Vault Status
+
+**You:** "What's the status of my vault?"
+
+**Nexus:**
+```
+📊 Vault Status: Solar DAO (SOLAR)
+
+💰 TVL: 25,000 USDC
+📈 Current Factor: 85%
+🪙 Circulating Supply: 250,000 SOLAR
+💵 Yield Earned: 312.50 USDC
+🔒 Status: Locked (unlocks in 18 days)
+
+Your holdings: 10,000 SOLAR (~$850 current value)
+```
+
+---
+
+### 💸 Previewing a Withdrawal
+
+**You:** "How much would I get if I withdraw 5,000 tokens?"
+
+**Nexus:**
+```
+📋 Withdrawal Preview
+
+🪙 Tokens to burn: 5,000 SOLAR
+📈 Current Factor: 95%
+💵 Estimated Payout: 527.50 USDC
+
+⚠️ Note: The vault is still locked. Withdrawals 
+will be available on March 15, 2026.
+```
+
+---
+
+### 💰 Making a Deposit
+
+**You:** "I want to deposit 1,000 USDC into the Solar DAO vault"
+
+**Nexus:**
+```
+💰 Deposit Preview
+
+📥 Amount: 1,000 USDC
+🪙 Tokens to receive: 10,000 SOLAR
+📍 Vault: 0x7d94...2329
+
+Click here to complete your deposit →
+[Deposit 1,000 USDC]
+```
+
+---
+
+### 🔓 Withdrawing Funds
+
+**You:** "I want to withdraw all my tokens"
+
+**Nexus:**
+```
+🔓 Withdrawal Ready
+
+🪙 Your balance: 10,000 SOLAR
+📈 Current Factor: 102%
+💵 Estimated Payout: 1,071.00 USDC
+📊 Profit: +71 USDC (+7.1%)
+
+Click here to complete your withdrawal →
+[Withdraw All]
+```
+
+---
+
+### ❓ Asking Questions
+
+**You:** "How does the yield work?"
+
+**Nexus:**
+```
+Great question! Here's how yield works in Nexus:
+
+1. When you deposit USDC, 100% goes to Yearn V3 vaults
+2. Yearn generates yield through DeFi strategies
+3. The yield increases the vault's TVL
+4. As TVL grows, your exit value improves
+
+Example: If the vault earns 10% APY and you hold 
+for a year, your tokens will be worth ~10% more 
+when you withdraw (assuming constant supply).
+
+The Dynamic Factor (F%) also improves over time, 
+starting at 80% and increasing to 100%+ as the 
+vault matures.
+```
+
+---
+
+### 🎤 Voice Commands (OmiMesh)
+
+You can also use voice commands:
+
+- *"Hey Nexus, check my vault status"*
+- *"What's my current balance?"*
+- *"How much yield has my vault earned?"*
+- *"Preview a withdrawal of 1000 tokens"*
+
+---
+
 ## System Architecture
 
 ```
