@@ -123,6 +123,8 @@ Deposits are deployed directly into **Yearn Finance V3 vaults** via ERC-4626, an
 12. Withdraw          →  Burn vault tokens, receive principal + yield
 ```
 
+![User Flow](docs/images/user-flow.svg)
+
 ---
 
 ## Nexus Plugin
