@@ -1,6 +1,6 @@
 # 🏦 Token Vault Launcher
 
-A decentralized vault system for token launches with yield-backed exits and voice integration.
+A decentralized vault system for token launches with yield-backed exits, powered by AI agents.
 
 Built for **ETH Boulder 2026** 🏔️
 
@@ -8,19 +8,100 @@ Built for **ETH Boulder 2026** 🏔️
 
 ## Overview
 
-Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with time-locked exits. Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
+Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise funds at a fixed price with time-locked exits. Users interact with an **AI agent via chat** to configure and deploy their vault. Deposits are deployed directly into **Yearn V3 vaults** via ERC-4626, and the generated yield improves exit terms over time.
 
 ### Key Features
 
-- **Fixed-price token sales** with configurable cap
+- **AI-powered deployment** via chat interface
+- **Fixed-price token sales** with configurable cap and token price
 - **Time-locked exits** with dynamic discount factor
 - **Direct Yearn V3 integration** via ERC-4626 (no intermediary)
-- **Voice-controlled queries** via AI wearable
+- **x402 payments** for launch fees ($1 USDC)
 - **Linear or exponential exit curves**
 
 ---
 
-## Architecture
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    FRONTEND (Next.js App Router)                     │
+│              Tailwind CSS + shadcn/ui + RainbowKit                   │
+├─────────────────────────────────────────────────────────────────────┤
+│  • User connects wallet (RainbowKit)                                │
+│  • Chat interface to describe token launch                          │
+│  • Pays $1 USDC via x402 protocol                                   │
+│  • Views deployed vault + token addresses                           │
+└────────────────────────────┬────────────────────────────────────────┘
+                             │ WebSocket / API
+                             ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      OPENCLAW AGENT                                  │
+│                    (Clawdbot Backend)                                │
+├─────────────────────────────────────────────────────────────────────┤
+│  • Processes chat messages                                          │
+│  • Extracts vault parameters from conversation                      │
+│  • Generates x402 payment request ($1 USDC)                         │
+│  • Verifies payment via facilitator                                 │
+│  • Deploys vault using agent wallet (pays gas)                      │
+│  • Stores vault info in Firebase                                    │
+└────────────────────────────┬────────────────────────────────────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│   x402 Payment  │ │    Firebase     │ │  Smart Contracts│
+│  stack.perkos   │ │   (Firestore)   │ │     (Base)      │
+├─────────────────┤ ├─────────────────┤ ├─────────────────┤
+│ • $1 USDC fee   │ │ • Vault records │ │ • VaultFactory  │
+│ • EIP-712 sigs  │ │ • User wallets  │ │ • Vault         │
+│ • Facilitator   │ │ • Tx history    │ │ • VaultToken    │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
+```
+
+---
+
+## User Flow
+
+```
+1. Connect Wallet     →  User connects via RainbowKit
+2. Chat with Agent    →  "I want to launch a token for my DeFi project..."
+3. Agent Configures   →  Extracts: cap, supply, unlock, fees, etc.
+4. Pay Launch Fee     →  $1 USDC via x402 (covers service + gas)
+5. Agent Deploys      →  Calls VaultFactory.createVault()
+6. Receive Addresses  →  Vault + Token addresses returned
+7. Share Link         →  User shares with investors to deposit
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 14 (App Router) + TypeScript |
+| **Styling** | Tailwind CSS + shadcn/ui |
+| **Wallet** | RainbowKit + wagmi + viem |
+| **Agent** | OpenClaw (Clawdbot) |
+| **Payments** | x402 protocol + stack.perkos.xyz facilitator |
+| **Database** | Firebase (Firestore) |
+| **Contracts** | Solidity 0.8.20 + Foundry |
+| **Chain** | Base (L2) |
+| **Yield** | Yearn V3 (ERC-4626) |
+
+---
+
+## Pricing
+
+| Fee | Amount | Description |
+|-----|--------|-------------|
+| **Launch Fee** | $1 USDC | Paid via x402 to deploy vault |
+| **Platform Fee** | 1% of yield | Ongoing, from generated yield |
+| **Gas** | Absorbed | Agent pays gas costs |
+
+---
+
+## Old Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
