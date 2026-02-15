@@ -63,7 +63,7 @@ contract VaultFactory is IVaultFactory, Ownable {
     {
         // Validate config
         if (config.depositAsset == address(0)) revert ZeroAddress();
-        if (config.orchestrator == address(0)) revert ZeroAddress();
+        if (config.yieldVault == address(0)) revert ZeroAddress();
         if (config.projectWallet == address(0)) revert ZeroAddress();
         if (config.cap == 0) revert InvalidConfig();
         if (config.unlockTimestamp <= block.timestamp) revert InvalidConfig();
@@ -75,7 +75,7 @@ contract VaultFactory is IVaultFactory, Ownable {
             config.depositAsset,
             config.name,
             config.symbol,
-            config.orchestrator,
+            config.yieldVault,
             config.cap,
             config.unlockTimestamp,
             config.initialFactorBps,

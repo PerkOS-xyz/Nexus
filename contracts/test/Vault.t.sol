@@ -5,12 +5,12 @@ import {Test, console} from "forge-std/Test.sol";
 import {Vault} from "../src/Vault.sol";
 import {IVault} from "../src/interfaces/IVault.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
-import {MockOrchestrator} from "./mocks/MockOrchestrator.sol";
+import {MockERC4626} from "./mocks/MockERC4626.sol";
 
 contract VaultTest is Test {
     Vault public vault;
     MockERC20 public usdc;
-    MockOrchestrator public orchestrator;
+    MockERC4626 public yieldVault;
 
     address public projectWallet = address(0x1111);
     address public platformWallet = address(0x2222);
@@ -25,14 +25,14 @@ contract VaultTest is Test {
     function setUp() public {
         // Deploy mocks
         usdc = new MockERC20("USD Coin", "USDC", 6);
-        orchestrator = new MockOrchestrator(address(usdc));
+        yieldVault = new MockERC4626(address(usdc));
 
         // Deploy vault
         vault = new Vault(
             address(usdc),
             "Test Vault Token",
             "TVT",
-            address(orchestrator),
+            address(yieldVault),
             CAP,
             block.timestamp + 7 days,
             INITIAL_FACTOR,
@@ -46,9 +46,6 @@ contract VaultTest is Test {
         // Fund users
         usdc.mint(user1, 1_000_000 * 1e6);
         usdc.mint(user2, 1_000_000 * 1e6);
-        
-        // Fund orchestrator for yield simulation
-        usdc.mint(address(orchestrator), 1_000_000 * 1e6);
     }
 
     function test_deposit() public {
@@ -164,5 +161,24 @@ contract VaultTest is Test {
         // Should round DOWN (floor)
         // 1001 * 8000 / 10000 = 800.8 → 800
         assertEq(preview, 800800000); // 800.8 USDC (rounds down at wei level)
+    }
+
+    function test_yieldAccrual() public {
+        uint256 depositAmount = 1000 * 1e6;
+
+        vm.startPrank(user1);
+        usdc.approve(address(vault), depositAmount);
+        vault.deposit(depositAmount);
+        vm.stopPrank();
+
+        // Simulate 10% yield accrual in the yield vault
+        yieldVault.addMockYield(1000); // 10%
+
+        // TVL should now reflect the yield
+        uint256 tvl = vault.getTVL();
+        assertEq(tvl, depositAmount * 110 / 100); // 1100 USDC
+        
+        // Accumulated yield should be 100 USDC
+        assertEq(vault.getAccumulatedYield(), 100 * 1e6);
     }
 }

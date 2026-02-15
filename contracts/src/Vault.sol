@@ -6,13 +6,13 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IVault} from "./interfaces/IVault.sol";
 import {IVaultToken} from "./interfaces/IVaultToken.sol";
-import {IOrchestrator} from "./interfaces/IOrchestrator.sol";
+import {IERC4626} from "./interfaces/IERC4626.sol";
 import {VaultToken} from "./VaultToken.sol";
 
 /**
  * @title Vault
  * @notice Core vault logic for Token Vault Launcher
- * @dev Manages deposits, withdrawals, yield distribution, and factor calculation
+ * @dev Integrates directly with Yearn V3 vaults via ERC-4626
  * 
  * IMPORTANT: All calculations round DOWN (floor) in favor of the vault.
  * Initial capital is only touched when F% < 100%.
@@ -33,8 +33,8 @@ contract Vault is IVault, ReentrancyGuard {
     /// @notice The vault token
     IVaultToken public immutable vaultToken;
     
-    /// @notice The yield orchestrator
-    IOrchestrator public immutable orchestrator;
+    /// @notice The Yearn V3 vault (ERC-4626)
+    IERC4626 public immutable yieldVault;
     
     /// @notice Maximum raise cap
     uint256 public immutable cap;
@@ -62,8 +62,11 @@ contract Vault is IVault, ReentrancyGuard {
 
     // ============ State ============
 
-    /// @notice Total Value Locked in the vault
-    uint256 public tvl;
+    /// @notice Total principal deposited (in asset units)
+    uint256 public totalPrincipal;
+    
+    /// @notice Total shares held in yield vault
+    uint256 public totalShares;
     
     /// @notice Circulating supply of vault tokens (decreases on burn)
     uint256 public circulatingSupply;
@@ -91,7 +94,7 @@ contract Vault is IVault, ReentrancyGuard {
      * @param _depositAsset The asset to deposit (e.g., USDC)
      * @param _name Token name
      * @param _symbol Token symbol
-     * @param _orchestrator Yield orchestrator address
+     * @param _yieldVault Yearn V3 vault address (ERC-4626)
      * @param _cap Maximum raise amount
      * @param _unlockTimestamp When withdrawals become available
      * @param _initialFactorBps Initial discount factor (basis points)
@@ -105,7 +108,7 @@ contract Vault is IVault, ReentrancyGuard {
         address _depositAsset,
         string memory _name,
         string memory _symbol,
-        address _orchestrator,
+        address _yieldVault,
         uint256 _cap,
         uint256 _unlockTimestamp,
         uint256 _initialFactorBps,
@@ -117,7 +120,7 @@ contract Vault is IVault, ReentrancyGuard {
     ) {
         depositAsset = IERC20(_depositAsset);
         vaultToken = new VaultToken(_name, _symbol, address(this));
-        orchestrator = IOrchestrator(_orchestrator);
+        yieldVault = IERC4626(_yieldVault);
         cap = _cap;
         unlockTimestamp = _unlockTimestamp;
         initialFactorBps = _initialFactorBps;
@@ -137,20 +140,23 @@ contract Vault is IVault, ReentrancyGuard {
      */
     function deposit(uint256 amount) external nonReentrant {
         if (amount == 0) revert ZeroAmount();
-        if (tvl + amount > cap) revert CapExceeded();
+        if (totalPrincipal + amount > cap) revert CapExceeded();
 
         // Transfer deposit asset from user
         depositAsset.safeTransferFrom(msg.sender, address(this), amount);
 
-        // Approve and deposit to orchestrator
-        depositAsset.approve(address(orchestrator), amount);
-        orchestrator.deposit(amount);
+        // Approve and deposit to Yearn vault
+        depositAsset.approve(address(yieldVault), amount);
+        uint256 sharesReceived = yieldVault.deposit(amount, address(this));
+
+        // Track shares received
+        totalShares += sharesReceived;
+        totalPrincipal += amount;
 
         // Mint vault tokens 1:1
         vaultToken.mint(msg.sender, amount);
 
         // Update state
-        tvl += amount;
         circulatingSupply += amount;
         totalMinted += amount;
 
@@ -168,15 +174,31 @@ contract Vault is IVault, ReentrancyGuard {
         if (block.timestamp < unlockTimestamp) revert WithdrawalsLocked();
         if (vaultToken.balanceOf(msg.sender) < tokenAmount) revert InsufficientBalance();
 
+        // Calculate current TVL (value of our shares in the yield vault)
+        uint256 currentTVL = yieldVault.convertToAssets(totalShares);
+
         // Calculate payout: (tvl * tokens * factor) / (supply * BPS_DENOMINATOR)
         // Rounds DOWN naturally due to integer division
-        uint256 payout = _calculatePayout(tokenAmount);
+        uint256 payout = (currentTVL * tokenAmount * currentFactorBps) / (circulatingSupply * BPS_DENOMINATOR);
+
+        // Calculate shares to redeem (proportional to payout vs total value)
+        uint256 sharesToRedeem = yieldVault.convertToShares(payout);
+        
+        // Ensure we don't try to redeem more than we have
+        if (sharesToRedeem > totalShares) {
+            sharesToRedeem = totalShares;
+            payout = yieldVault.convertToAssets(sharesToRedeem);
+        }
 
         // Update state BEFORE external calls
         uint256 oldFactor = currentFactorBps;
         circulatingSupply -= tokenAmount;
         totalWithdrawn += tokenAmount;
-        tvl -= payout;
+        totalShares -= sharesToRedeem;
+        
+        // Reduce principal proportionally
+        uint256 principalReduction = (totalPrincipal * tokenAmount) / (circulatingSupply + tokenAmount);
+        totalPrincipal -= principalReduction;
 
         // Recalculate factor
         _updateFactor();
@@ -184,11 +206,13 @@ contract Vault is IVault, ReentrancyGuard {
         // Burn tokens
         vaultToken.burn(msg.sender, tokenAmount);
 
-        // Withdraw from orchestrator and transfer to user
-        orchestrator.withdraw(payout);
-        depositAsset.safeTransfer(msg.sender, payout);
+        // Withdraw from Yearn vault
+        uint256 assetsReceived = yieldVault.redeem(sharesToRedeem, address(this), address(this));
+        
+        // Transfer to user (use actual received amount for safety)
+        depositAsset.safeTransfer(msg.sender, assetsReceived);
 
-        emit Withdrawn(msg.sender, tokenAmount, payout, currentFactorBps);
+        emit Withdrawn(msg.sender, tokenAmount, assetsReceived, currentFactorBps);
         
         if (currentFactorBps != oldFactor) {
             emit FactorUpdated(oldFactor, currentFactorBps);
@@ -196,20 +220,27 @@ contract Vault is IVault, ReentrancyGuard {
     }
 
     /**
-     * @notice Harvest yield from orchestrator and distribute
+     * @notice Harvest yield from Yearn vault and distribute
      * @dev Anyone can call this (permissionless)
      */
     function harvestYield() external nonReentrant {
-        uint256 yieldAmount = orchestrator.getYieldBalanceOnAssets();
-        if (yieldAmount == 0) return;
+        // Calculate current value vs principal
+        uint256 currentValue = yieldVault.convertToAssets(totalShares);
+        if (currentValue <= totalPrincipal) return; // No yield
+        
+        uint256 yieldAmount = currentValue - totalPrincipal;
 
-        // Withdraw yield from orchestrator
-        orchestrator.withdrawYield(address(this), yieldAmount);
+        // Convert yield to shares and redeem
+        uint256 yieldShares = yieldVault.convertToShares(yieldAmount);
+        if (yieldShares == 0) return;
+        
+        uint256 assetsReceived = yieldVault.redeem(yieldShares, address(this), address(this));
+        totalShares -= yieldShares;
 
         // Calculate fee splits (rounds DOWN for fees)
-        uint256 platformShare = (yieldAmount * platformFeeBps) / BPS_DENOMINATOR;
-        uint256 projectShare = (yieldAmount * projectFeeBps) / BPS_DENOMINATOR;
-        uint256 treasuryShare = yieldAmount - platformShare - projectShare;
+        uint256 platformShare = (assetsReceived * platformFeeBps) / BPS_DENOMINATOR;
+        uint256 projectShare = (assetsReceived * projectFeeBps) / BPS_DENOMINATOR;
+        uint256 treasuryShare = assetsReceived - platformShare - projectShare;
 
         // Distribute fees
         if (platformShare > 0) {
@@ -219,14 +250,15 @@ contract Vault is IVault, ReentrancyGuard {
             depositAsset.safeTransfer(projectWallet, projectShare);
         }
 
-        // Treasury share goes back to TVL
+        // Treasury share goes back to yield vault (increases TVL)
         if (treasuryShare > 0) {
-            depositAsset.approve(address(orchestrator), treasuryShare);
-            orchestrator.deposit(treasuryShare);
-            tvl += treasuryShare;
+            depositAsset.approve(address(yieldVault), treasuryShare);
+            uint256 newShares = yieldVault.deposit(treasuryShare, address(this));
+            totalShares += newShares;
+            totalPrincipal += treasuryShare; // This yield is now part of principal
         }
 
-        emit YieldHarvested(yieldAmount, platformShare, projectShare, treasuryShare);
+        emit YieldHarvested(assetsReceived, platformShare, projectShare, treasuryShare);
     }
 
     /**
@@ -243,10 +275,10 @@ contract Vault is IVault, ReentrancyGuard {
     // ============ View Functions ============
 
     /**
-     * @notice Get total value locked
+     * @notice Get total value locked (current value of shares)
      */
     function getTVL() external view returns (uint256) {
-        return tvl;
+        return yieldVault.convertToAssets(totalShares);
     }
 
     /**
@@ -264,12 +296,29 @@ contract Vault is IVault, ReentrancyGuard {
     }
 
     /**
+     * @notice Get total principal deposited
+     */
+    function getTotalPrincipal() external view returns (uint256) {
+        return totalPrincipal;
+    }
+
+    /**
+     * @notice Get accumulated yield (TVL - principal)
+     */
+    function getAccumulatedYield() external view returns (uint256) {
+        uint256 currentValue = yieldVault.convertToAssets(totalShares);
+        return currentValue > totalPrincipal ? currentValue - totalPrincipal : 0;
+    }
+
+    /**
      * @notice Preview withdrawal amount for given tokens
      * @param tokenAmount Amount of tokens to burn
      * @return payout Amount of deposit asset to receive
      */
     function previewWithdraw(uint256 tokenAmount) external view returns (uint256) {
-        return _calculatePayout(tokenAmount);
+        if (circulatingSupply == 0) return 0;
+        uint256 currentTVL = yieldVault.convertToAssets(totalShares);
+        return (currentTVL * tokenAmount * currentFactorBps) / (circulatingSupply * BPS_DENOMINATOR);
     }
 
     /**
@@ -278,23 +327,11 @@ contract Vault is IVault, ReentrancyGuard {
      */
     function getValuePerToken() external view returns (uint256) {
         if (circulatingSupply == 0) return PRECISION;
-        return (tvl * PRECISION) / circulatingSupply;
+        uint256 currentTVL = yieldVault.convertToAssets(totalShares);
+        return (currentTVL * PRECISION) / circulatingSupply;
     }
 
     // ============ Internal Functions ============
-
-    /**
-     * @notice Calculate payout for withdrawal
-     * @dev payout = (tvl * tokens * factor) / (supply * BPS_DENOMINATOR)
-     *      Rounds DOWN naturally due to integer division
-     */
-    function _calculatePayout(uint256 tokenAmount) internal view returns (uint256) {
-        if (circulatingSupply == 0) return 0;
-        
-        // Using larger intermediate to avoid overflow
-        // payout = (tvl * tokenAmount * currentFactorBps) / (circulatingSupply * BPS_DENOMINATOR)
-        return (tvl * tokenAmount * currentFactorBps) / (circulatingSupply * BPS_DENOMINATOR);
-    }
 
     /**
      * @notice Update factor based on curve type

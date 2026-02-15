@@ -7,12 +7,12 @@ import {IVaultFactory} from "../src/interfaces/IVaultFactory.sol";
 import {IVault} from "../src/interfaces/IVault.sol";
 import {Vault} from "../src/Vault.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
-import {MockOrchestrator} from "./mocks/MockOrchestrator.sol";
+import {MockERC4626} from "./mocks/MockERC4626.sol";
 
 contract VaultFactoryTest is Test {
     VaultFactory public factory;
     MockERC20 public usdc;
-    MockOrchestrator public orchestrator;
+    MockERC4626 public yieldVault;
 
     address public owner = address(0x1);
     address public platformWallet = address(0x2);
@@ -20,7 +20,7 @@ contract VaultFactoryTest is Test {
 
     function setUp() public {
         usdc = new MockERC20("USD Coin", "USDC", 6);
-        orchestrator = new MockOrchestrator(address(usdc));
+        yieldVault = new MockERC4626(address(usdc));
         
         factory = new VaultFactory(platformWallet, 100, owner); // 1% platform fee
     }
@@ -35,7 +35,7 @@ contract VaultFactoryTest is Test {
             initialFactorBps: 8000,
             projectFeeBps: 500,
             projectWallet: projectWallet,
-            orchestrator: address(orchestrator),
+            yieldVault: address(yieldVault),
             curveType: IVault.CurveType.LINEAR
         });
 
@@ -57,7 +57,7 @@ contract VaultFactoryTest is Test {
             initialFactorBps: 8000,
             projectFeeBps: 500,
             projectWallet: projectWallet,
-            orchestrator: address(orchestrator),
+            yieldVault: address(yieldVault),
             curveType: IVault.CurveType.LINEAR
         });
 

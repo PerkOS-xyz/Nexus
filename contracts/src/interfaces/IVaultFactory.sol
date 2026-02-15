@@ -17,7 +17,7 @@ interface IVaultFactory {
         uint256 initialFactorBps; // Initial discount factor (e.g., 8000 = 80%)
         uint256 projectFeeBps;    // Project share of yield (basis points)
         address projectWallet;    // Receives project fees
-        address orchestrator;     // Yield orchestrator address
+        address yieldVault;       // Yearn V3 vault address (ERC-4626)
         IVault.CurveType curveType; // LINEAR or EXPONENTIAL
     }
 
