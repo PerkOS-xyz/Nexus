@@ -79,9 +79,9 @@ Token Vault Launcher enables projects to deploy a vault + ERC-20 token to raise 
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Next.js 14 (App Router) + TypeScript |
+| **Frontend** | Next.js 16 (App Router) + TypeScript |
 | **Styling** | Tailwind CSS + shadcn/ui |
-| **Wallet** | RainbowKit + wagmi + viem |
+| **Wallet** | Dynamic + wagmi + viem |
 | **Agent** | OpenClaw (Clawdbot) |
 | **Payments** | x402 protocol + stack.perkos.xyz facilitator |
 | **Database** | Firebase (Firestore) |
@@ -292,19 +292,18 @@ ethboulder-2026/
 │   │   ├── Vault.sol
 │   │   ├── VaultToken.sol
 │   │   └── interfaces/
-│   │       ├── IERC4626.sol    # ERC-4626 interface
-│   │       ├── IVault.sol
-│   │       ├── IVaultFactory.sol
-│   │       └── IVaultToken.sol
 │   ├── test/
-│   │   ├── Vault.t.sol
-│   │   ├── VaultFactory.t.sol
-│   │   └── mocks/
-│   │       ├── MockERC20.sol
-│   │       └── MockERC4626.sol
 │   └── script/
-├── app/                    # Frontend (Next.js)
-├── agent/                  # AI agent skill
+├── NexusApp/               # Frontend (Next.js App Router)
+│   ├── app/                # Routes
+│   │   ├── layout.tsx      # Root layout + DynamicProvider
+│   │   ├── page.tsx        # Landing page
+│   │   ├── create/         # /create - Deploy vault form
+│   │   └── liquidity/      # /liquidity - Vault cards + deposit/withdraw
+│   ├── components/ui/      # shadcn/ui components
+│   ├── providers/          # Dynamic wallet provider
+│   └── lib/                # Utilities
+├── scripts/                # Deployment scripts
 └── docs/                   # Documentation
 ```
 
@@ -313,8 +312,9 @@ ethboulder-2026/
 ## Tech Stack
 
 - **Contracts:** Solidity 0.8.20+, Foundry, OpenZeppelin, Solady
-- **Frontend:** Next.js 14, TypeScript, Tailwind, shadcn/ui, wagmi, viem
-- **Wallet:** RainbowKit
+- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind, shadcn/ui, wagmi, viem
+- **Wallet:** Dynamic
+- **Agent:** Nexus (OpenClaw/Clawdbot)
 - **Chain:** Base (L2)
 - **Yield:** Yearn V3 (direct ERC-4626 integration)
 
@@ -434,9 +434,10 @@ PRIVATE_KEY=0x...
 BASE_RPC_URL=https://base-mainnet.g.alchemy.com/v2/YOUR_KEY
 BASESCAN_API_KEY=...
 
-# app/.env.local
-NEXT_PUBLIC_WALLET_CONNECT_ID=...
-NEXT_PUBLIC_CHAIN_ID=8453
+# NexusApp/.env.local
+NEXT_PUBLIC_DYNAMIC_ENV_ID=your_dynamic_environment_id
+NEXT_PUBLIC_CHAIN_ID=84532
+NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
 NEXT_PUBLIC_VAULT_FACTORY_ADDRESS=0x...
 ```
 
